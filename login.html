@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+body{
+  margin:0;
+  font-family:'Segoe UI', Arial;
+  background:#0f0f11;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:white;
+  overflow:hidden;
+}
+
+/* تأثير إضاءة خلفية */
+body::before{
+  content:"";
+  position:absolute;
+  width:400px;
+  height:400px;
+  background:radial-gradient(circle,#f7b50033,transparent 70%);
+  filter:blur(80px);
+  z-index:0;
+}
+
+/* الكارت */
+.card{
+  width:85%;
+  max-width:320px;
+  background:#1c1c1e;
+  border-radius:30px;
+  padding:30px 25px 40px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.6);
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  animation:fadeIn 0.8s ease;
+  z-index:1;
+}
+
+/* بانر ذهبي */
+.top-banner{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:90px;
+  background:linear-gradient(135deg,#f7b500,#ffcc33);
+  border-bottom-left-radius:60px;
+  border-bottom-right-radius:60px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-weight:900;
+  font-size:20px;
+  color:#111;
+}
+
+/* المحتوى */
+.content{
+  margin-top:110px;
+}
+
+/* حقول الإدخال */
+.input-box{
+  width:100%;
+  margin-bottom:18px;
+}
+
+.input-box input{
+  width:100%;
+  padding:14px 18px;
+  border-radius:30px;
+  border:2px solid rgba(247,181,0,0.6);
+  background:#111;
+  color:white;
+  font-size:14px;
+  outline:none;
+  transition:0.3s;
+}
+
+.input-box input:focus{
+  border:2px solid #f7b500;
+  box-shadow:0 0 12px rgba(247,181,0,0.3);
+}
+
+/* زر ذهبي */
+.gold-btn{
+  width:100%;
+  padding:13px;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  font-size:14px;
+  background:linear-gradient(135deg,#f7b500,#ffcc33);
+  color:#111;
+  cursor:pointer;
+  transition:0.3s;
+  margin-top:5px;
+}
+
+.gold-btn:hover{
+  transform:scale(1.03);
+}
+
+/* زر Google */
+.google-btn{
+  width:100%;
+  padding:13px;
+  border:none;
+  border-radius:25px;
+  font-weight:bold;
+  font-size:14px;
+  background:#2c2c2e;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  margin-top:15px;
+  border:1px solid #333;
+  transition:0.3s;
+}
+
+.google-btn:hover{
+  background:#f7b500;
+  color:#111;
+}
+
+/* أنيميشن دخول */
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="top-banner">
+    🎁 جوائز وكالة مسعودي
+  </div>
+
+  <div class="content">
+
+    <h3>تسجيل الدخول</h3>
+
+    <div class="input-box">
+      <input type="email" id="email" placeholder="البريد الإلكتروني">
+    </div>
+
+    <div class="input-box">
+      <input type="password" id="password" placeholder="كلمة المرور">
+    </div>
+
+    <button class="gold-btn" id="emailLogin">
+      تسجيل بالبريد
+    </button>
+
+    <button class="google-btn" id="googleLogin">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+      الدخول بحساب Google
+    </button>
+
+  </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, 
+signInWithEmailAndPassword, createUserWithEmailAndPassword,
+onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+  authDomain: "popo-da43c.firebaseapp.com",
+  projectId: "popo-da43c",
+  storageBucket: "popo-da43c.firebasestorage.app",
+  messagingSenderId: "570136899084",
+  appId: "1:570136899084:web:2a86be16b0ff2261c98829"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+/* تسجيل Google */
+document.getElementById("googleLogin").addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    alert("خطأ أثناء تسجيل الدخول بجوجل");
+  }
+});
+
+/* تسجيل بالبريد */
+document.getElementById("emailLogin").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch {
+    /* لو الحساب غير موجود ينشئ حساب جديد */
+    try{
+      await createUserWithEmailAndPassword(auth, email, password);
+    }catch(error){
+      alert("حدث خطأ في تسجيل البريد");
+    }
+  }
+});
+
+/* تحويل بعد تسجيل الدخول */
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.href = "home.html";
+  }
+});
+
+</script>
+
+</body>
+</html>

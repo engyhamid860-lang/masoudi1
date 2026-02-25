@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم الأدمن</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial;background:#0f172a;color:#fff;padding:20px}
+.header{
+  background:linear-gradient(135deg,#f7b500,#ffcc33);
+  padding:20px;border-radius:20px;
+  text-align:center;color:#000;margin-bottom:20px
+}
+.card{
+  background:#1e293b;padding:15px;
+  border-radius:15px;margin-bottom:12px
+}
+button{
+  margin-top:6px;padding:6px 10px;
+  border:none;border-radius:6px;
+  cursor:pointer;color:#fff
+}
+.green{background:#16a34a}
+.red{background:#dc2626}
+.blue{background:#2563eb}
+.orange{background:#ea580c}
+input{padding:5px;border-radius:5px;border:none;margin-top:5px}
+img{border-radius:8px}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h2>📊 لوحة تحكم الأدمن</h2>
+</div>
+
+<h3>👥 المستخدمين</h3>
+<div id="users"></div>
+
+<h3>🎁 الجوائز</h3>
+<div id="prizes"></div>
+
+<h3>📦 طلبات الاستبدال</h3>
+<div id="redeems"></div>
+
+<div id="participantsBox" style="display:none;background:#000000cc;padding:20px;position:fixed;inset:0;overflow:auto;"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  doc,
+  updateDoc,
+  getDoc,
+  deleteDoc,
+  increment,
+  setDoc,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+  authDomain: "popo-da43c.firebaseapp.com",
+  projectId: "popo-da43c",
+  storageBucket: "popo-da43c.firebasestorage.app",
+  messagingSenderId: "570136899084",
+  appId: "1:570136899084:web:2a86be16b0ff2261c98829"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ================= حماية الأدمن ================= */
+
+onAuthStateChanged(auth, async(user)=>{
+
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+
+  const snap = await getDoc(doc(db,"users",user.uid));
+  if(!snap.exists() || snap.data().isAdmin !== true){
+    alert("هذا الحساب ليس أدمن");
+    location.href="index.html";
+    return;
+  }
+
+  loadUsers();
+  loadPrizes();
+  loadRedeems();
+});
+
+/* ================= المستخدمين ================= */
+
+function loadUsers(){
+
+  onSnapshot(collection(db,"users"), async snapshot=>{
+
+    let html = "";
+
+    for (const docSnap of snapshot.docs){
+
+      const d = docSnap.data();
+      const uid = docSnap.id;
+
+      // 🔥 حساب المشاركات الحقيقية
+      const partSnap = await getDocs(
+        query(collection(db,"prizeParticipants"),
+        where("userId","==",uid))
+      );
+
+      // 🔥 حساب مرات الفوز الحقيقية
+      const winSnap = await getDocs(
+        query(collection(db,"prizes"),
+        where("winner","==",d.name || ""))
+      );
+
+      // 🔥 حساب طلبات الاستبدال
+      const redeemSnap = await getDocs(
+        query(collection(db,"redeemRequests"),
+        where("userId","==",uid))
+      );
+
+      html += `
+      <div class="card">
+        <img src="${d.photo || 'https://i.imgur.com/6VBx3io.png'}" width="50">
+        <b>${d.name || "-"}</b>
+
+        <p>💰 الرصيد: ${d.walletBalance || 0}</p>
+        <p>🎁 مشاركات: ${partSnap.size}</p>
+        <p>🏆 مرات الفوز: ${winSnap.size}</p>
+        <p>💎 طلبات الاستبدال: ${redeemSnap.size}</p>
+
+        <input type="number" id="points-${uid}" placeholder="عدد النقاط">
+
+        <button class="blue" onclick="addPoints('${uid}')">
+        ➕ إضافة نقاط
+        </button>
+
+        <button class="red" onclick="removeUser('${uid}')">
+        🗑 حذف
+        </button>
+      </div>
+      `;
+    }
+
+    document.getElementById("users").innerHTML = html;
+
+  });
+}
+
+window.addPoints = async(uid)=>{
+  const val = document.getElementById(`points-${uid}`).value;
+  if(!val) return;
+
+  await updateDoc(doc(db,"users",uid),{
+    walletBalance: increment(Number(val))
+  });
+
+  alert("تم إضافة النقاط ✅");
+};
+
+window.removeUser = async(uid)=>{
+  if(confirm("هل تريد حذف المستخدم؟")){
+    await deleteDoc(doc(db,"users",uid));
+  }
+};
+
+/* ================= الجوائز ================= */
+
+function loadPrizes(){
+
+  onSnapshot(collection(db,"prizes"), snapshot=>{
+
+    let html="";
+
+    snapshot.forEach(docSnap=>{
+      const d = docSnap.data();
+
+      html += `
+      <div class="card">
+        <img src="${d.image}" width="100%">
+        <p>${d.currentPoints}/${d.targetPoints}</p>
+        <p>الحالة: ${d.active ? "مفتوحة" : "مغلقة"}</p>
+
+        <button class="blue"
+        onclick="viewParticipants('${docSnap.id}')">
+        📊 عرض المشاركين
+        </button>
+
+        ${
+          d.active
+          ? `<button class="green"
+              onclick="closePrize('${docSnap.id}')">
+              🔒 إغلاق يدوي
+             </button>`
+          : `<button class="orange"
+              onclick="reopenPrize('${docSnap.id}')">
+              ♻ إعادة فتح
+             </button>`
+        }
+
+        <button class="red"
+        onclick="deletePrize('${docSnap.id}')">
+        🗑 حذف
+        </button>
+      </div>
+      `;
+    });
+
+    document.getElementById("prizes").innerHTML = html;
+  });
+}
+
+/* عرض المشاركين واختيار الأعلى */
+
+window.viewParticipants = async(prizeId)=>{
+
+  const box = document.getElementById("participantsBox");
+  box.style.display="block";
+  box.innerHTML="<h3>📊 المشاركين</h3>";
+
+  const q = query(collection(db,"prizeParticipants"),
+                  where("prizeId","==",prizeId));
+
+  const snap = await getDocs(q);
+
+  let usersMap = {};
+
+  snap.forEach(docSnap=>{
+    const data = docSnap.data();
+
+    if(!usersMap[data.userId]){
+      usersMap[data.userId]={
+        name:data.name,
+        photo:data.photo,
+        totalPoints:0
+      };
+    }
+
+    usersMap[data.userId].totalPoints += data.points;
+  });
+
+  const sorted = Object.entries(usersMap)
+  .sort((a,b)=> b[1].totalPoints - a[1].totalPoints);
+
+  sorted.forEach(([uid,user])=>{
+    box.innerHTML += `
+    <div class="card">
+      <img src="${user.photo}" width="50">
+      <h4>${user.name}</h4>
+      <p>إجمالي النقاط: ${user.totalPoints}</p>
+    </div>
+    `;
+  });
+
+  if(sorted.length > 0){
+
+  const top = sorted[0];
+
+  box.innerHTML += `
+  <button class="green"
+  onclick="chooseWinner('${prizeId}',
+  '${top[0]}',
+  '${top[1].name}',
+  '${top[1].photo}')">
+  👑 اختيار صاحب أعلى نقاط
+  </button>
+  `;
+}
+
+  box.innerHTML += `
+  <button class="red" onclick="closeParticipants()">
+  إغلاق
+  </button>
+  `;
+};
+
+window.closeParticipants=()=>{
+  document.getElementById("participantsBox").style.display="none";
+};
+
+/* اختيار الفائز */
+
+window.chooseWinner = async(prizeId,uid,name,photo)=>{
+
+  await updateDoc(doc(db,"prizes",prizeId),{
+    active:false,
+    winner:name
+  });
+
+  await updateDoc(doc(db,"users",uid),{
+    totalWins: increment(1)
+  });
+
+  await setDoc(doc(db,"liveActivity","current"),{
+    type:"winner",
+    name:name,
+    photo:photo,
+    message:"فاز بالجائزة الكبرى 🏆",
+    time: Date.now()+Math.random()
+  });
+
+  alert("تم اختيار الفائز 👑");
+  closeParticipants();
+};
+
+window.closePrize = async(id)=>{
+  await updateDoc(doc(db,"prizes",id),{
+    active:false
+  });
+};
+
+window.reopenPrize = async(id)=>{
+  await updateDoc(doc(db,"prizes",id),{
+    active:true,
+    currentPoints:0,
+    winner:""
+  });
+};
+
+window.deletePrize = async(id)=>{
+  if(confirm("حذف الجائزة؟")){
+    await deleteDoc(doc(db,"prizes",id));
+  }
+};
+
+/* ================= طلبات الاستبدال ================= */
+
+function loadRedeems(){
+
+  onSnapshot(collection(db,"redeemRequests"), snapshot=>{
+
+    let html="";
+
+    snapshot.forEach(docSnap=>{
+      const d = docSnap.data();
+
+      html += `
+      <div class="card">
+        <b>${d.userName}</b>
+        <p>ID: ${d.playerId}</p>
+        <p>الحالة: ${d.status}</p>
+
+        ${
+          d.status==="pending"
+          ? `<button class="green"
+             onclick="approveRedeem('${docSnap.id}','${d.userId}')">
+             ✔ موافقة
+             </button>`
+          : ""
+        }
+      </div>
+      `;
+    });
+
+    document.getElementById("redeems").innerHTML = html;
+  });
+}
+
+window.approveRedeem = async(id,uid)=>{
+
+  await updateDoc(doc(db,"redeemRequests",id),{
+    status:"approved",
+    approvedAt:Date.now()
+  });
+
+  await updateDoc(doc(db,"users",uid),{
+    totalRedeems: increment(1)
+  });
+
+  alert("تم قبول الطلب ✅");
+};
+
+</script>
+</body>
+</html>

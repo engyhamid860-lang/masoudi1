@@ -1,0 +1,1660 @@
+<!DOCTYPE html>  <html lang="ar">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>الجوائز</title>  <style>  
+*{  
+  box-sizing:border-box;  
+}  
+body{  
+  margin:0;  
+  font-family:'Segoe UI', Arial;  
+  background:#111;  
+  color:white;  
+  overflow-x:hidden;  
+  padding-bottom:140px;  
+}  
+  
+/* خلفية ذهبية علوية */  
+
+  
+.logo-wrapper{  
+  display:flex;  
+  align-items:center;  
+  justify-content:center;  
+  width:100%;  
+  text-align:center;  
+}  
+  
+.logo-text{  
+  font-size:22px;  
+  font-weight:900;  
+  color:#000;  
+  letter-spacing:1px;  
+}  
+  
+/* الكارت الرئيسي */  
+.card{
+  margin:-10px auto 10px auto; /* أهم سطر */
+  width:92%;
+  max-width:320px;
+  background:#1c1c1e;
+  padding:25px;
+  border-radius:30px;
+  border:1px solid #2a2a2a;
+  position:relative;
+  
+}
+  
+/* صورة المستخدم */  
+.profile{
+  text-align:center;
+  margin-top:-60px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  margin-bottom:25px;  /* ← أضف هذا السطر */
+}
+
+.profile img{
+  width:85px;
+  height:85px;
+  border-radius:50%;
+  border:4px solid #f7b500;
+  background:#111;
+  box-shadow:0 10px 25px rgba(0,0,0,0.6);
+}
+
+#userName{
+  margin:5px 0;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+#editProfileBtn{
+  padding:8px 18px;
+  border:none;
+  border-radius:20px;
+  background:linear-gradient(135deg,#f7b500,#ffcc33);
+  color:#111;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.3s ease;
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+
+#editProfileBtn:hover{
+  transform:translateY(-3px);
+}
+/* الرصيد */  
+.balance{  
+  text-align:center;  
+  font-size:18px;  
+  margin-bottom:20px;  
+}  
+  
+.balance span{  
+  color:#f7b500;  
+  font-weight:bold;  
+  font-size:20px;  
+}  
+  .rewards-box{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:25px;
+}
+
+.reward-item{
+  flex:1;
+  background:linear-gradient(145deg,#1c1c1e,#2c2c2e);
+  padding:15px 10px;
+  border-radius:18px;
+  text-align:center;
+  border:1px solid #2a2a2a;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+  transition:0.3s ease;
+}
+
+.reward-item:hover{
+  transform:translateY(-5px);
+}
+
+.reward-item span{
+  display:block;
+  font-size:18px;
+  font-weight:bold;
+  color:#f7b500;
+  margin-top:6px;
+}
+
+.reward-item small{
+  font-size:11px;
+  color:#aaa;
+}
+/* 🔥 توهج عند الفوز */
+.reward-item.glow{
+  border:2px solid gold;
+  box-shadow:0 0 25px rgba(255,215,0,0.7),
+             0 0 45px rgba(255,215,0,0.4);
+  animation: winnerPulse 1.2s infinite alternate;
+}
+
+@keyframes winnerPulse{
+  from{
+    transform:scale(1);
+    box-shadow:0 0 20px rgba(255,215,0,0.5);
+  }
+  to{
+    transform:scale(1.05);
+    box-shadow:0 0 40px rgba(255,215,0,1);
+  }
+}
+/* كارت الجائزة */  
+.prize-card{  
+  background:#2c2c2e;  
+  padding:15px;  
+  border-radius:20px;  
+  margin-bottom:20px;  
+  border:1px solid #3a3a3c;  
+}  
+  
+/* صورة الجائزة */  
+.prize-card img{  
+  width:80%;              /* تصغير العرض */  
+height:auto;         /* تصغير الارتفاع */  
+  object-fit:cover;  
+  border-radius:15px;  
+  display:block;  
+  margin:0 auto;          /* توسيط الصورة */  
+}  
+.prize-card img{  
+  box-shadow:0 10px 25px rgba(0,0,0,0.5);  
+}  
+  
+/* شريط التقدم */  
+.progress{  
+  background:#3a3a3c;  
+  height:14px;  
+  border-radius:20px;  
+  margin:15px 0;  
+  overflow:hidden;  
+}  
+  
+.progress-bar{  
+  background:linear-gradient(90deg,#f7b500,#ffcc00);  
+  height:100%;  
+  width:0%;  
+}  
+  
+/* زر الاشتراك */  
+.join-btn{  
+  width:100%;  
+  padding:13px;  
+  border:none;  
+  border-radius:25px;  
+  background:linear-gradient(135deg,#f7b500,#ffcc33);  
+  color:#111;  
+  font-weight:bold;  
+  font-size:15px;  
+  cursor:pointer;  
+}  
+  
+/* الشريط السفلي */  
+.navbar{
+  position:fixed;
+  bottom:15px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:420px;
+  background:#1c1c1e;
+  padding:14px 0;
+  border-radius:35px;
+  border:1px solid #2a2a2a;
+  display:flex;
+  justify-content:space-around;
+
+  z-index:99999;   /* رقم عالي جداً */
+}
+
+.navbar button{  
+  background:none;  
+  border:none;  
+  color:#f7b500;  
+  font-weight:bold;  
+  font-size:14px;  
+}  
+.nav-btn{
+  position:relative;
+  background:none;
+  border:none;
+  color:#aaa;
+  font-weight:bold;
+  font-size:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  transition:0.3s ease;
+  overflow:hidden;
+}
+
+.nav-btn span{
+  font-size:12px;
+}
+
+/* عند الضغط */
+.nav-btn:active{
+  transform:scale(0.9);
+}
+
+/* الزر النشط */
+.nav-btn.active{
+  color:#f7b500;
+}
+
+.nav-btn.active::after{
+  content:"";
+  position:absolute;
+  bottom:-8px;
+  width:35px;
+  height:4px;
+  background:#f7b500;
+  border-radius:10px;
+  box-shadow:0 0 10px #f7b500;
+}
+
+/* Ripple effect */
+.nav-btn::before{
+  content:"";
+  position:absolute;
+  width:0;
+  height:0;
+  background:rgba(255,215,0,0.4);
+  border-radius:50%;
+  transform:translate(-50%, -50%);
+  top:50%;
+  left:50%;
+  opacity:0;
+  transition:width .4s ease, height .4s ease, opacity .6s ease;
+}
+
+.nav-btn:active::before{
+  width:120px;
+  height:120px;
+  opacity:1;
+}
+.live-info{  
+  position:absolute;  
+  bottom:8px;  
+  width:100%;  
+  text-align:center;  
+  font-size:20px;  
+  color:#000;  
+}  
+  
+.live-info span{  
+  margin:0 6px;  
+}  
+.prize-card.winner{  
+  border:2px solid gold;  
+  box-shadow:0 0 25px rgba(255,215,0,0.6);  
+  animation: glow 1.5s infinite alternate;  
+}  
+  .lux-title{
+  font-size:28px;
+  font-weight:900;
+  text-align:center;
+  letter-spacing:2px;
+  color:white;
+}
+
+.lux-title span{
+  color:#111;
+  background:white;
+  padding:3px 8px;
+  border-radius:6px;
+  margin-left:6px;
+}
+
+@keyframes glow{  
+  from{ box-shadow:0 0 15px rgba(255,215,0,0.4); }  
+  to{ box-shadow:0 0 35px rgba(255,215,0,0.9); }  
+}  
+.date-time-box{
+  background:#111;
+  display:inline-block;
+  padding:12px 25px;
+  border-radius:25px;
+  margin-top:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.3);
+}
+
+.live-time{
+  font-size:22px;
+  font-weight:700;
+  color:#f7b500;
+}
+
+.live-date{
+  font-size:13px;
+  color:#aaa;
+}
+.header{
+  height:240px;
+  background:linear-gradient(135deg,#ffcc00,#f7b500);
+  border-bottom-left-radius:80px 40px;
+border-bottom-right-radius:80px 40px;
+  padding:30px 20px 80px;
+  position:relative;
+  text-align:center;
+  overflow:hidden;
+}
+.clock-card{
+  position:absolute;
+  bottom:50px;   /* بدلاً من -45px */
+  left:50%;
+  transform:translateX(-50%);
+  background:#111;
+  padding:18px 25px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+  width:190px;
+}
+
+.clock-time{
+  font-size:26px;
+  font-weight:800;
+  color:#f7b500;
+}
+
+.clock-date{
+  font-size:13px;
+  color:#aaa;
+  margin-top:5px;
+}
+.main-card{
+  margin-top:90px;
+  padding:20px;
+}
+
+/* حركة الفوز للصورة */
+.prize-card.win-animate img{
+  animation: prizeWin 1.2s ease forwards;
+  z-index:1000;
+  position:relative;
+}
+
+@keyframes prizeWin{
+  0%{
+    transform:scale(1) translateY(0) rotate(0deg);
+  }
+  30%{
+    transform:scale(1.3) translateY(-40px) rotate(-8deg);
+  }
+  60%{
+    transform:scale(1.4) translateY(-50px) rotate(8deg);
+  }
+  100%{
+    transform:scale(1) translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes fadeUp {
+  from {opacity:0; transform:translateY(20px);}
+  to {opacity:1; transform:translateY(0);}
+}
+/* ===== شاشة الفوز السينمائية ===== */
+
+.win-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999999;
+  opacity:0;
+  pointer-events:none;
+  transition:0.4s ease;
+}
+
+.win-overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.win-popup{
+  width:280px;
+  max-width:80%;
+  transform:scale(0.5) rotate(-10deg);
+  transition:0.6s cubic-bezier(.2,.8,.2,1);
+}
+
+.win-overlay.active .win-popup{
+  transform:scale(1.2) rotate(0deg);
+}
+
+.win-popup img{
+  width:100%;
+  border-radius:20px;
+  box-shadow:0 0 40px gold;
+}
+/* ===== شريط النشاط المطور ===== */
+
+.live-bar{
+  position:fixed;
+  top:20px;
+  right:-400px; /* يبدأ خارج الشاشة */
+  width:85%;
+  max-width:380px;
+  background:linear-gradient(135deg,#f7b500,#ffcc00);
+  color:#111;
+  padding:12px 15px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+  z-index:999999;
+  transition:0.6s cubic-bezier(.2,.8,.2,1);
+}
+
+.live-bar.show{
+  right:20px; /* يدخل من اليمين */
+}
+
+.live-bar img{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid white;
+}
+
+.live-bar-content{
+  display:flex;
+  flex-direction:column;
+  font-size:14px;
+}
+
+.live-bar-content strong{
+  font-size:15px;
+}
+
+.live-bar-content span{
+  font-size:13px;
+}
+/* زر عائم */
+.daily-float{
+  position:fixed;
+  bottom:95px; /* فوق الناف بار */
+  left:20px;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#f7b500,#ffcc33);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:28px;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,0.4);
+  z-index:99999;
+  transition:0.3s ease;
+}
+
+/* تأثير نبض */
+.daily-float::after{
+  content:"";
+  position:absolute;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:rgba(247,181,0,0.6); /* ذهبي */
+  box-shadow:
+    0 0 20px rgba(247,181,0,0.8),
+    0 0 40px rgba(255,204,51,0.6);
+  animation:pulseGold 1.5s infinite;
+}
+
+@keyframes pulseGold{
+  0%{
+    transform:scale(1);
+    opacity:0.8;
+  }
+  100%{
+    transform:scale(1.9);
+    opacity:0;
+  }
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);opacity:1;}
+  100%{transform:scale(1.6);opacity:0;}
+}
+
+.daily-float:active{
+  transform:scale(0.9);
+}
+/* اهتزاز عند توفر المكافأة */
+.daily-ready{
+  animation:shake 1s infinite;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-3px);}
+  50%{transform:translateX(3px);}
+  75%{transform:translateX(-3px);}
+  100%{transform:translateX(0);}
+}
+
+/* إيقاف النبض */
+.daily-claimed::after{
+  display:none;
+}
+.daily-wrapper{
+  position:fixed;
+  bottom:85px;
+  left:10px;
+  width:80px;
+  height:80px;
+  z-index:99999;
+}
+
+.progress-ring{
+  position:absolute;
+  top:0;
+  left:0;
+  transform:rotate(-90deg);
+}
+
+.progress-bg{
+  opacity:0.3;
+}
+
+.progress-bar-ring{
+  stroke-linecap:round;
+  stroke-dasharray:214;
+  stroke-dashoffset:214;
+  transition:stroke-dashoffset 1s linear;
+}
+
+.daily-float{
+  position:absolute;
+  top:10px;
+  left:10px;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#f7b500,#ffcc33);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:28px;
+  cursor:pointer;
+}
+.redeem-float{
+  position:fixed;
+  bottom:170px;
+  left:20px;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#00c853,#69f0ae);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:26px;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,0.4);
+  z-index:99999;
+  transition:0.3s ease;
+}
+
+.redeem-ready{
+  animation:shake 1s infinite;
+}
+.custom-popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(6px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999999;
+  opacity:0;
+  pointer-events:none;
+  transition:0.3s ease;
+}
+
+.custom-popup.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.popup-box{
+  width:85%;
+  max-width:320px;
+  background:#1c1c1e;
+  padding:25px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  transform:scale(0.8);
+  transition:0.3s ease;
+}
+
+.custom-popup.active .popup-box{
+  transform:scale(1);
+}
+
+.popup-icon{
+  font-size:40px;
+  margin-bottom:10px;
+}
+
+.popup-box h3{
+  margin:10px 0;
+  color:#f7b500;
+}
+
+.popup-box p{
+  font-size:14px;
+  color:#ccc;
+  margin-bottom:20px;
+}
+
+.popup-box button{
+  padding:10px 25px;
+  border:none;
+  border-radius:20px;
+  background:linear-gradient(135deg,#f7b500,#ffcc33);
+  color:#111;
+  font-weight:bold;
+  cursor:pointer;
+}
+.admin-alert{
+  animation:shake 1s infinite;
+}
+</style>  </head>  
+<body>  
+<div class="header">
+
+  <h1 class="lux-title">
+    𝐌𝐀𝐒𝐎𝐔𝐃𝐈 
+  </h1>
+
+  
+<div class="clock-card">
+  <div class="clock-time" id="liveClock"></div>
+  <div class="clock-date" id="liveDate"></div>
+</div>
+
+</div>  <div class="card">  <div class="profile">  
+  <img id="userPhoto">  
+<div style="display:flex;align-items:center;gap:8px;justify-content:center;">
+  <h2 id="userName" style="margin:0;"></h2>
+  <span id="adminBadge" 
+  style="
+  display:none;
+  background:linear-gradient(135deg,#ff0000,#ff5252);
+  color:white;
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:10px;
+  font-weight:bold;
+  box-shadow:0 0 10px rgba(255,0,0,0.6);
+  ">
+  👑 ADMIN
+  </span>
+</div>
+  
+<button id="editProfileBtn">
+تغير الاسم والصورة ⚙️
+</button>
+
+</div>  <div class="balance">  
+<div class="rewards-box">
+  <div class="reward-item">
+    🎁
+    <span id="totalPrizes">0</span>
+    <small>عدد الجوائز</small>
+  </div>
+
+  <div class="reward-item">
+    🏆
+    <span id="totalWinners">0</span>
+    <small>الفائزين</small>
+  </div>
+
+  <div class="reward-item">
+    💰
+    <span id="totalPoints">0</span>
+    <small>مجموع النقاط</small>
+  </div>
+</div>
+💰 رصيدك: <span id="walletBalance">0</span> نقطة  
+</div> 
+ <div id="prizesContainer"></div> <button id="adminBtn"
+style="
+display:none;
+width:100%;
+margin-top:15px;
+padding:14px;
+border:none;
+border-radius:25px;
+background:linear-gradient(135deg,#ff0000,#ff5252);
+color:white;
+font-weight:bold;
+font-size:15px;
+cursor:pointer;
+box-shadow:0 10px 25px rgba(255,0,0,0.4);
+transition:0.3s ease;
+"
+onclick="window.location.href='admin.html'">
+
+👑 دخول لوحة التحكم
+
+</button>
+
+</div>  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>  <script type="module">  
+   import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { getAuth, onAuthStateChanged, signOut, updateProfile }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  onSnapshot, 
+  increment,
+  addDoc,
+  query,
+  where,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { getStorage, ref, uploadBytes, getDownloadURL }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  
+const firebaseConfig = {  
+apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",  
+authDomain: "popo-da43c.firebaseapp.com",  
+projectId: "popo-da43c",  
+storageBucket: "popo-da43c.firebasestorage.app",  
+messagingSenderId: "570136899084",  
+appId: "1:570136899084:web:2a86be16b0ff2261c98829"  
+};  
+  
+const app = initializeApp(firebaseConfig);  
+const auth = getAuth(app);  
+const db = getFirestore(app);  
+const storage = getStorage(app);  
+let currentUser = null;  
+  let shownWinners = new Set();
+window.logout = function(){  
+signOut(auth).then(()=>{  
+window.location.href="login.html";  
+});  
+};  
+  
+onAuthStateChanged(auth, async(user)=>{
+
+if(!user){
+  window.location.href="login.html";
+  return;
+}
+
+currentUser = user;
+const userRef = doc(db,"users",currentUser.uid);
+// 🔔 مراقبة الموافقة على طلب الاستبدال
+let alreadyShown = new Set();
+
+const q = query(
+  collection(db,"redeemRequests"),
+  where("userId","==",user.uid)
+);
+
+onSnapshot(q,(snapshot)=>{
+
+  snapshot.forEach(async (docSnap)=>{
+
+    const data = docSnap.data();
+
+    if(
+      data.status === "approved" &&
+      !data.notified &&
+      !alreadyShown.has(docSnap.id)
+    ){
+
+      alreadyShown.add(docSnap.id);
+
+      showPopup(
+        "تم التنفيذ بنجاح 🎉",
+        "تم استلام 22,000 كوينز في حسابك",
+        "success"
+      );
+
+      await updateDoc(docSnap.ref,{
+        notified:true
+      });
+
+    }
+
+  });
+
+});
+document.getElementById("editProfileBtn").onclick = ()=>{
+  document.getElementById("editModal").style.display = "flex";
+};
+const dailyBtn = document.getElementById("dailyBtn");
+
+let countdownInterval = null;
+const ring = document.querySelector(".progress-bar-ring");
+const radius = 34;
+const circumference = 2 * Math.PI * radius;
+
+ring.style.strokeDasharray = circumference;
+
+function setProgress(percent){
+  const offset = circumference - percent/100 * circumference;
+  ring.style.strokeDashoffset = offset;
+}
+async function checkDailyStatus(){
+
+  
+  const snap = await getDoc(userRef);
+
+  if(!snap.exists()) return;
+
+  const data = snap.data();
+
+  const now = new Date();
+  const lastClaim = data.lastDailyClaim
+    ? data.lastDailyClaim.toDate()
+    : null;
+
+  if(!lastClaim){
+    activateReward();
+    setProgress(100);
+    return;
+  }
+
+  const diff = now - lastClaim;
+  const remaining = 24*60*60*1000 - diff;
+
+  if(remaining <= 0){
+    activateReward();
+    setProgress(100);
+  }else{
+    deactivateReward();
+
+    const percent = ((24*60*60*1000 - remaining) / (24*60*60*1000)) * 100;
+    setProgress(percent);
+
+    startCountdown(remaining);
+  }
+}
+
+function activateReward(){
+  dailyBtn.classList.add("daily-ready");
+  dailyBtn.classList.remove("daily-claimed");
+  stopCountdown();
+}
+
+function deactivateReward(){
+  dailyBtn.classList.remove("daily-ready");
+  dailyBtn.classList.add("daily-claimed");
+  setProgress(0); // 🔥 إعادة الدائرة للصفر
+}
+
+function startCountdown(ms){
+
+  stopCountdown();
+
+  const total = 24*60*60*1000; // 24 ساعة كاملة
+
+  countdownInterval = setInterval(()=>{
+
+    ms -= 1000;
+
+    if(ms <= 0){
+      clearInterval(countdownInterval);
+      activateReward();
+      setProgress(100); // اكتمال الدائرة
+      
+      return;
+    }
+
+    const hours = Math.floor(ms / (1000*60*60));
+    const minutes = Math.floor((ms % (1000*60*60)) / (1000*60));
+    const seconds = Math.floor((ms % (1000*60)) / 1000);
+
+
+
+    // 🔥 حساب نسبة التقدم
+    const percent = ((total - ms) / total) * 100;
+    setProgress(percent);
+
+  },1000);
+}
+
+function stopCountdown(){
+  if(countdownInterval){
+    clearInterval(countdownInterval);
+  }
+}
+
+dailyBtn.onclick = async ()=>{
+
+  if(!dailyBtn.classList.contains("daily-ready")){
+    return;
+  }
+
+  const userRef = doc(db,"users",currentUser.uid);
+
+  await updateDoc(userRef,{
+    walletBalance: increment(5),
+    lastDailyClaim: new Date()
+  });
+
+  deactivateReward();
+  checkDailyStatus();
+
+};
+
+
+
+
+// 🔥 مراقبة الرصيد لحظياً
+const liveUserRef = doc(db,"users",currentUser.uid);
+
+onSnapshot(liveUserRef, (snap)=>{
+  if(snap.exists()){
+    const data = snap.data();
+    const balance = data.walletBalance || 0;
+
+    document.getElementById("walletBalance").innerText = balance;
+
+    const redeemBtn = document.getElementById("redeemBtn");
+
+    if(balance >= 100){
+      redeemBtn.classList.add("redeem-ready");
+      redeemBtn.style.opacity = "1";
+    }else{
+      redeemBtn.classList.remove("redeem-ready");
+      redeemBtn.style.opacity = "0.5"; // شكله باهت
+    }
+  }
+});
+
+document.getElementById("userName").innerText = user.displayName;
+document.getElementById("userPhoto").src =
+  user.photoURL || "https://i.imgur.com/6VBx3io.png";
+
+// لا تعرّف userRef مرة ثانية هنا ❌
+// فقط استخدمه
+
+let userSnap = await getDoc(userRef);
+
+if(!userSnap.exists()){
+  await setDoc(userRef,{
+    name: user.displayName,
+    email: user.email,
+    walletBalance: 0,
+    isAdmin: false,
+    createdAt: new Date()
+  });
+}
+
+const userData = (await getDoc(userRef)).data();
+
+if(userData.isAdmin === true){
+
+  document.getElementById("adminBtn").style.display="inline-block";
+  document.getElementById("adminBadge").style.display="inline-block";
+
+  // تغيير لون الصورة للأدمن
+  document.getElementById("userPhoto").style.border = "4px solid red";
+
+  // 🔥 مراقبة الطلبات المعلقة
+  const q = query(
+    collection(db,"redeemRequests"),
+    where("status","==","pending")
+  );
+
+  onSnapshot(q,(snap)=>{
+
+    const adminBtn = document.getElementById("adminBtn");
+
+    if(!snap.empty){
+      adminBtn.classList.add("admin-alert");
+    }else{
+      adminBtn.classList.remove("admin-alert");
+    }
+
+  });
+}
+
+checkDailyStatus();
+});
+
+document.getElementById("saveProfile").onclick = async () => {
+
+  const newName = document.getElementById("newName").value.trim();
+  const file = document.getElementById("newPhotoFile").files[0];
+
+  if (!newName) {
+    alert("اكتب اسم جديد");
+    return;
+  }
+
+  try {
+
+    let photoURL = currentUser.photoURL || "";
+
+    // ===== رفع الصورة إلى Cloudinary =====
+    if (file) {
+
+      const cloudName = "dxgk9f23z";
+      const uploadPreset = "ysokgsdi";
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+      console.log("Cloudinary response:", data);
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || "Upload failed");
+      }
+
+      if (!data.secure_url) {
+        throw new Error("No secure_url returned");
+      }
+
+      photoURL = data.secure_url;
+    }
+
+    // ===== تحديث Firebase Authentication =====
+    await updateProfile(currentUser, {
+      displayName: newName,
+      photoURL: photoURL
+    });
+
+    // ===== تحديث Firestore =====
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      name: newName,
+      photo: photoURL
+    });
+
+    // ===== تحديث الواجهة =====
+    document.getElementById("userName").innerText = newName;
+    document.getElementById("userPhoto").src = photoURL;
+
+    document.getElementById("editModal").style.display = "none";
+
+    alert("تم التحديث بنجاح ✅");
+
+  } catch (error) {
+    console.error("FULL ERROR:", error);
+    alert(error.message);
+  }
+
+};
+
+
+function showWinAnimation(imageSrc){
+
+  const overlay = document.getElementById("winOverlay");
+  const img = document.getElementById("winImage");
+
+  img.src = imageSrc;
+
+  overlay.classList.add("active");
+
+  setTimeout(()=>{
+    overlay.classList.remove("active");
+  },6000);
+
+}
+// تحميل الجوائز  
+  
+function renderPrizes(snapshot){
+
+  const container = document.getElementById("prizesContainer");
+
+  let html = "";
+  let totalPrizes = snapshot.size;
+  let totalWinners = 0;
+  let totalPoints = 0;
+
+  snapshot.forEach(docSnap=>{
+
+    const p = docSnap.data();
+
+    if(!p.active) totalWinners++;
+    totalPoints += p.currentPoints || 0;
+
+    const percent = Math.min(
+      ((p.currentPoints || 0) / (p.targetPoints || 1)) * 100,
+      100
+    );
+
+    html += `
+      <div class="prize-card ${!p.active ? 'winner' : ''}">
+        <img src="${p.image}" loading="lazy">
+        <div class="progress">
+          <div class="progress-bar" style="width:${percent}%"></div>
+        </div>
+        <p>${p.currentPoints || 0} / ${p.targetPoints || 0} نقطة</p>
+        ${
+          p.active
+          ? `<button class="join-btn"
+               onclick="joinPrize('${docSnap.id}', this)">
+               🔥 اشترك بـ 10 نقاط
+             </button>`
+          : `<div style="background:#00c853;padding:12px;border-radius:15px;">
+              🏆 الفائز: ${p.winner || ""}
+            </div>`
+        }
+      </div>
+    `;
+
+    // حركة الفوز مرة واحدة فقط
+    if(!p.active && p.winner && !shownWinners.has(docSnap.id)){
+      shownWinners.add(docSnap.id);
+      setTimeout(()=>{
+        showWinAnimation(p.image);
+        launchConfetti();
+      },600);
+    }
+
+  });
+
+  // 🔥 هنا يتم بناء DOM مرة واحدة فقط
+  container.innerHTML = html;
+
+  document.getElementById("totalPrizes").innerText = totalPrizes;
+  document.getElementById("totalWinners").innerText = totalWinners;
+  document.getElementById("totalPoints").innerText = totalPoints;
+}
+window.joinPrize = async function(prizeId, btn){
+
+  if(!currentUser){
+    alert("انتظر قليلاً...");
+    return;
+  }
+
+  const cost = 10;
+
+  btn.disabled = true;
+  btn.innerText = "جاري الاشتراك...";
+  btn.style.opacity = "0.7";
+
+  try{
+
+    const userRef = doc(db,"users",currentUser.uid);
+    const prizeRef = doc(db,"prizes",prizeId);
+
+    const userSnap = await getDoc(userRef);
+    const prizeSnap = await getDoc(prizeRef);
+
+    if(!userSnap.exists() || !prizeSnap.exists()){
+      throw new Error("بيانات غير موجودة");
+    }
+
+    const userData = userSnap.data();
+    const prizeData = prizeSnap.data();
+
+    if(!prizeData.active){
+      showPopup("الجائزة مغلقة","تم إغلاق هذه الجائزة","error");
+      return;
+    }
+
+    if((userData.walletBalance || 0) < cost){
+      showPopup("رصيد غير كاف","لا يوجد نقاط كافية","error");
+      return;
+    }
+
+    const newBalance = userData.walletBalance - cost;
+    const newPoints = (prizeData.currentPoints || 0) + cost;
+
+    // 🔥 تحديث المستخدم
+    await updateDoc(userRef,{
+      walletBalance: newBalance,
+      totalParticipations: (userData.totalParticipations || 0) + 1
+    });
+
+    // 🔥 تحديث نقاط الجائزة
+    await updateDoc(prizeRef,{
+      currentPoints: newPoints
+    });
+
+    // 🔥 تسجيل المشاركة
+    await addDoc(collection(db,"prizeParticipants"),{
+      prizeId: prizeId,
+      userId: currentUser.uid,
+      name: currentUser.displayName || "مستخدم",
+      photo: currentUser.photoURL || "",
+      points: cost,
+      createdAt: serverTimestamp()
+    });
+
+    // 🔥 تحديث الشريط العلوي (بدون merge)
+    await setDoc(doc(db,"liveActivity","current"),{
+      type:"join",
+      userId: currentUser.uid,
+      name: currentUser.displayName || "مستخدم",
+      photo: currentUser.photoURL || "",
+      message:"اشترك في الجائزة 🔥",
+      prizeId: prizeId,
+      createdAt: serverTimestamp()
+    });
+
+  }catch(error){
+    console.error("Join Error:", error);
+    showPopup("حدث خطأ", error.message, "error");
+  }
+  finally{
+    btn.disabled = false;
+    btn.innerText = "🔥 اشترك بـ 10 نقاط";
+    btn.style.opacity = "1";
+  }
+};
+function launchConfetti(){  
+  
+  const duration = 2000;  
+  const end = Date.now() + duration;  
+  
+  (function frame() {  
+    confetti({  
+      particleCount: 5,  
+      angle: 60,  
+      spread: 55,  
+      origin: { x: 0 }  
+    });  
+    confetti({  
+      particleCount: 5,  
+      angle: 120,  
+      spread: 55,  
+      origin: { x: 1 }  
+    });  
+  
+    if (Date.now() < end) {  
+      requestAnimationFrame(frame);  
+    }  
+  })();  
+}  
+  
+onSnapshot(collection(db,"prizes"), (snapshot)=>{
+  renderPrizes(snapshot);
+});
+
+onSnapshot(doc(db,"liveActivity","current"), (snap)=>{
+  if(snap.exists()){
+    const data = snap.data();
+
+    showLiveBar(
+      data.name,
+      data.message,
+      data.photo,
+      data.type
+    );
+  }
+});
+
+/* ===== الساعة والتاريخ ===== */  
+function updateClock(){
+  const now = new Date();
+
+  const time = now.toLocaleTimeString("en-US", {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const date = now.toLocaleDateString("en-US", {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  document.getElementById("liveClock").innerText = time;
+  document.getElementById("liveDate").innerText = date;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+  
+  
+  
+window.goPage = function(page, el){
+
+  document.querySelectorAll(".nav-btn")
+    .forEach(btn=>btn.classList.remove("active"));
+
+  el.classList.add("active");
+
+  setTimeout(()=>{
+    window.location.href = page;
+  },150);
+}
+function showLiveBar(name, message, photo, type="join"){
+
+  const bar = document.getElementById("liveBar");
+
+  if(type === "winner"){
+    bar.style.background = "linear-gradient(135deg,#00c853,#69f0ae)";
+  }else{
+    bar.style.background = "linear-gradient(135deg,#f7b500,#ffcc00)";
+  }
+
+  document.getElementById("liveBarName").innerText = name;
+  document.getElementById("liveBarMessage").innerText = message;
+  document.getElementById("liveBarPhoto").src =
+    photo || "https://i.imgur.com/6VBx3io.png";
+
+  bar.classList.add("show");
+
+  setTimeout(()=>{
+    bar.classList.remove("show");
+  },8000);
+}
+window.redeemReward = async function(){
+
+  const cost = 100;
+
+  const userRef = doc(db,"users",currentUser.uid);
+  const snap = await getDoc(userRef);
+
+  if(!snap.exists()) return;
+
+  const userData = snap.data();
+
+  if(userData.walletBalance < cost){
+    showPopup(
+      "رصيد غير كاف",
+      "تحتاج 100 نقطة للحصول على 22,000 كوينز",
+      "error"
+    );
+    return;
+  }
+
+  document.getElementById("redeemModal").classList.add("active");
+};
+function showPopup(title, message, type="error"){
+
+  const popup = document.getElementById("customPopup");
+  const icon = document.getElementById("popupIcon");
+  const popupTitle = document.getElementById("popupTitle");
+  const popupMessage = document.getElementById("popupMessage");
+
+  popupTitle.innerText = title;
+  popupMessage.innerText = message;
+
+  if(type === "success"){
+    icon.innerText = "🎉";
+    popupTitle.style.color = "#00c853";
+  }else{
+    icon.innerText = "❌";
+    popupTitle.style.color = "#ff5252";
+  }
+
+  popup.classList.add("active");
+}
+
+window.closePopup = function(){
+  document.getElementById("customPopup").classList.remove("active");
+}
+window.closeRedeemModal = function(){
+  document.getElementById("redeemModal").classList.remove("active");
+};
+
+window.confirmRedeem = async function(){
+
+  try{
+
+    const playerId = document.getElementById("playerIdInput").value.trim();
+    const playerName = document.getElementById("playerNameInput").value.trim();
+
+    if(!playerId || !playerName){
+      showPopup(
+        "بيانات ناقصة",
+        "يرجى إدخال ID واسم الحساب",
+        "error"
+      );
+      return;
+    }
+
+    const cost = 100;
+    const userRef = doc(db,"users",currentUser.uid);
+    const snap = await getDoc(userRef);
+
+    if(!snap.exists()){
+      showPopup("خطأ","المستخدم غير موجود","error");
+      return;
+    }
+
+    const userData = snap.data();
+
+    if(userData.walletBalance < cost){
+      showPopup(
+        "رصيد غير كاف",
+        "تحتاج 100 نقطة للاستبدال",
+        "error"
+      );
+      return;
+    }
+
+    // 🔥 خصم النقاط
+    await updateDoc(userRef,{
+      walletBalance: increment(-cost)
+    });
+
+    // 🔥 إنشاء طلب
+    await addDoc(collection(db,"redeemRequests"),{
+      userId: currentUser.uid,
+      userName: currentUser.displayName || "مستخدم",
+      playerId: playerId,
+      playerName: playerName,
+      amount: 22000,
+      status: "pending",
+      notified: false,
+      createdAt: new Date()
+    });
+
+    closeRedeemModal();
+
+    showPopup(
+      "تم إرسال الطلب 🎉",
+      "سيتم مراجعة طلبك من قبل الإدارة",
+      "success"
+    );
+
+  }catch(error){
+    console.error("Redeem Error:", error);
+
+    showPopup(
+      "حدث خطأ",
+      error.message,
+      "error"
+    );
+  }
+
+};
+</script>
+<div class="custom-popup" id="redeemModal">
+  <div class="popup-box">
+
+    <h3 style="color:#00c853;">استبدال 22,000 كوينز</h3>
+
+    <input id="playerIdInput" placeholder="اكتب ID اللاعب"
+    style="width:100%;padding:10px;margin:10px 0;border-radius:10px;border:none;">
+
+    <input id="playerNameInput" placeholder="اكتب اسم الحساب"
+    style="width:100%;padding:10px;margin:10px 0;border-radius:10px;border:none;">
+
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
+      <button onclick="confirmRedeem()" 
+      style="background:#00c853;border:none;padding:10px 20px;border-radius:15px;color:white;">
+      تأكيد
+      </button>
+
+      <button onclick="closeRedeemModal()" 
+      style="background:#ff5252;border:none;padding:10px 20px;border-radius:15px;color:white;">
+      إلغاء
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="custom-popup" id="customPopup">
+  <div class="popup-box">
+    <div class="popup-icon" id="popupIcon">❌</div>
+    <h3 id="popupTitle"></h3>
+    <p id="popupMessage"></p>
+    <button onclick="closePopup()">حسناً</button>
+  </div>
+</div>
+
+<div class="redeem-float" id="redeemBtn" onclick="redeemReward()">
+  💎
+</div>
+
+
+<div id="editModal" style="
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.7);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999999;">
+
+  <div style="
+  position:relative;
+  background:#1c1c1e;
+  padding:25px;
+  border-radius:20px;
+  width:90%;
+  max-width:350px;
+  text-align:center;">
+
+    <!-- زر الرجوع داخل الكارت -->
+    <button onclick="document.getElementById('editModal').style.display='none'"
+    style="
+    position:absolute;
+    top:12px;
+    left:12px;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    border:none;
+    background:#2c2c2e;
+    color:white;
+    font-size:18px;
+    cursor:pointer;">
+    ←
+    </button>
+
+    <h3>تعديل الحساب</h3>
+
+    <input id="newName" placeholder="الاسم الجديد"
+    style="width:100%;padding:10px;margin:10px 0;border-radius:10px;border:none;">
+
+    <input type="file" id="newPhotoFile" accept="image/*"
+    style="width:100%;margin:10px 0;">
+
+    <button id="saveProfile"
+    style="background:#f7b500;border:none;padding:10px 20px;border-radius:15px;">
+    حفظ
+    </button>
+
+  </div>
+</div>
+<!-- زر المكافأة اليومية العائم -->
+
+<!-- زر المكافأة اليومية العائم -->
+<div class="daily-wrapper">
+
+  <svg class="progress-ring" width="80" height="80">
+    <circle
+      class="progress-bg"
+      stroke="#333"
+      stroke-width="6"
+      fill="transparent"
+      r="34"
+      cx="40"
+      cy="40"/>
+    <circle
+      class="progress-bar-ring"
+      stroke="#f7b500"
+      stroke-width="6"
+      fill="transparent"
+      r="34"
+      cx="40"
+      cy="40"/>
+  </svg>
+
+  <div class="daily-float" id="dailyBtn">
+    🎁
+  </div>
+
+</div>
+
+
+<div class="live-bar" id="liveBar">
+  <img id="liveBarPhoto">
+  <div class="live-bar-content">
+    <strong id="liveBarName"></strong>
+    <span id="liveBarMessage"></span>
+  </div>
+</div>
+
+<div class="win-overlay" id="winOverlay">
+  <div class="win-popup">
+    <img id="winImage">
+  </div>
+</div>
+
+<div class="navbar">
+  <button class="nav-btn active" onclick="goPage('index.html', this)">
+    🏠 <span>الرئيسية</span>
+  </button>
+
+  <button class="nav-btn" onclick="goPage('wallet.html', this)">
+    💰 <span>المحفظة</span>
+  </button>
+
+  <button class="nav-btn" onclick="logout()">
+    🚪 <span>خروج</span>
+  </button>
+</div> </body>  
+</html>  

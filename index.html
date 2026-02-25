@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Loading...</title>
+</head>
+<body>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+  authDomain: "popo-da43c.firebaseapp.com",
+  projectId: "popo-da43c",
+  storageBucket: "popo-da43c.firebasestorage.app",
+  messagingSenderId: "570136899084",
+  appId: "1:570136899084:web:2a86be16b0ff2261c98829"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.href = "home.html";
+  } else {
+    window.location.href = "login.html";
+  }
+});
+</script>
+
+</body>
+</html>

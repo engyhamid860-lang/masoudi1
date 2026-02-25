@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شراء نقاط</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Segoe UI',Arial;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  color:#fff;
+  padding:20px;
+}
+
+.card{
+  background:#1c1c1e;
+  width:100%;
+  max-width:420px;
+  padding:30px 25px;
+  border-radius:25px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.6);
+  animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.card h2{
+  text-align:center;
+  margin-bottom:20px;
+  color:#f7b500;
+}
+
+/* الباقات */
+.packages{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.package{
+  background:#2c2c2e;
+  padding:12px;
+  border-radius:15px;
+  display:flex;
+  justify-content:space-between;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.package:hover{
+  background:#f7b500;
+  color:#000;
+}
+
+.package.active{
+  background:#f7b500;
+  color:#000;
+  font-weight:bold;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:none;
+  border-radius:12px;
+  background:#2c2c2e;
+  color:#fff;
+  font-size:14px;
+}
+
+input:focus{
+  outline:none;
+  border:1px solid #f7b500;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:50px;
+  background:linear-gradient(135deg,#ffcc00,#f7b500);
+  font-weight:bold;
+  font-size:16px;
+  color:#111;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:disabled{
+  background:#555;
+  cursor:not-allowed;
+}
+
+.transfer{
+  text-align:center;
+  margin-top:15px;
+  font-size:14px;
+  color:#aaa;
+}
+
+.success{
+  margin-top:15px;
+  background:#16a34a;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+  display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <h2>💰 شراء نقاط</h2>
+
+  <div class="packages">
+    <div class="package" data-points="100" data-price="50">
+      100 نقطة <span>50 جنيه</span>
+    </div>
+    <div class="package" data-points="250" data-price="100">
+      250 نقطة <span>100 جنيه</span>
+    </div>
+    <div class="package" data-points="500" data-price="180">
+      500 نقطة <span>180 جنيه</span>
+    </div>
+  </div>
+
+  <input id="phone" placeholder="رقم الهاتف الذي حولت منه">
+
+  <button id="submitBtn">إرسال طلب الشحن 🚀</button>
+
+  <div class="success" id="successMsg">
+    ✅ تم إرسال طلبك بنجاح
+  </div>
+
+  <div class="transfer">
+    التحويل إلى: 010xxxxxxxx
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+authDomain: "popo-da43c.firebaseapp.com",
+projectId: "popo-da43c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let selectedPackage = null;
+
+document.querySelectorAll(".package").forEach(pkg=>{
+  pkg.addEventListener("click",()=>{
+    document.querySelectorAll(".package")
+      .forEach(p=>p.classList.remove("active"));
+    pkg.classList.add("active");
+    selectedPackage = {
+      points: pkg.dataset.points,
+      price: pkg.dataset.price
+    };
+  });
+});
+
+document.getElementById("submitBtn").addEventListener("click", async()=>{
+  const user = auth.currentUser;
+  const phone = document.getElementById("phone").value.trim();
+  const btn = document.getElementById("submitBtn");
+
+  if(!user){
+    alert("يجب تسجيل الدخول");
+    return;
+  }
+
+  if(!selectedPackage){
+    alert("اختر الباقة أولاً");
+    return;
+  }
+
+  if(phone.length < 10){
+    alert("أدخل رقم هاتف صحيح");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "جاري الإرسال...";
+
+  await addDoc(collection(db,"transactions"),{
+    uid: user.uid,
+    amountPaid: selectedPackage.price,
+    points: selectedPackage.points,
+    phone: phone,
+    status: "pending",
+    createdAt: new Date()
+  });
+
+  btn.textContent = "إرسال طلب الشحن 🚀";
+  btn.disabled = false;
+
+  document.getElementById("successMsg").style.display="block";
+});
+</script>
+
+</body>
+</html>
