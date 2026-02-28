@@ -744,40 +744,6 @@ border-bottom-right-radius:80px 40px;
 </div>
 💰 رصيدك: <span id="walletBalance">0</span> نقطة  
 </div> 
-<!-- ===== الغرفة الصوتية ===== -->
-<div id="voiceRoomBox" style="
-margin-top:25px;
-background:#2c2c2e;
-padding:20px;
-border-radius:20px;
-border:1px solid #3a3a3c;">
-
-  <h3 style="text-align:center;color:#f7b500;">
-    🎙️ الغرفة الصوتية العامة
-  </h3>
-
-  <p style="text-align:center;">
-    👥 الموجودين:
-    <span id="roomCount">0</span>
-  </p>
-
-  <div id="participantsList"
-  style="margin-top:15px;display:flex;flex-direction:column;gap:10px;">
-  </div>
-
-  <button id="toggleMicBtn"
-  style="
-  width:100%;
-  margin-top:15px;
-  padding:12px;
-  border:none;
-  border-radius:20px;
-  background:linear-gradient(135deg,#f7b500,#ffcc33);
-  font-weight:bold;">
-  🎤 فتح المايك
-  </button>
-
-</div>
  <div id="prizesContainer"></div> <button id="adminBtn"
  
 style="
@@ -808,21 +774,20 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, updateProfile }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  onSnapshot,
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  onSnapshot, 
   increment,
   addDoc,
   query,
   where,
-  serverTimestamp,
-  deleteDoc   // ← أضف هذا
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import { getStorage, ref, uploadBytes, getDownloadURL }
@@ -842,9 +807,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);  
 const db = getFirestore(app);  
 const storage = getStorage(app);  
-const roomId = "general";
-const roomRef = doc(db,"voiceRooms",roomId);
-const participantsRef = collection(db,"voiceRooms",roomId,"participants");
 let currentUser = null;  
   let shownWinners = new Set();
 window.logout = function(){  
@@ -861,65 +823,6 @@ if(!user){
 }
 
 currentUser = user;
-const myParticipantRef = doc(participantsRef, currentUser.uid);
-
-await setDoc(myParticipantRef,{
-  name: currentUser.displayName || "مستخدم",
-  photo: currentUser.photoURL || "",
-  muted: false,
-  joinedAt: new Date()
-});
-// ===== زر المايك =====
-const toggleBtn = document.getElementById("toggleMicBtn");
-
-toggleBtn.onclick = async ()=>{
-
-  const snap = await getDoc(myParticipantRef);
-  if(!snap.exists()) return;
-
-  const currentMuted = snap.data().muted;
-
-  await updateDoc(myParticipantRef,{
-    muted: !currentMuted
-  });
-
-  toggleBtn.innerText = currentMuted
-    ? "🎤 فتح المايك"
-    : "🔇 كتم المايك";
-};
-
-
-// ===== مراقبة المشاركين =====
-onSnapshot(participantsRef,(snapshot)=>{
-
-  document.getElementById("roomCount").innerText = snapshot.size;
-
-  const list = document.getElementById("participantsList");
-  list.innerHTML = "";
-
-  snapshot.forEach(docSnap=>{
-
-    const data = docSnap.data();
-
-    list.innerHTML += `
-      <div style="
-      background:#1c1c1e;
-      padding:10px;
-      border-radius:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;">
-        <span>${data.name}</span>
-        <span>${data.muted ? "🔇" : "🎤"}</span>
-      </div>
-    `;
-
-  });
-
-});
-window.addEventListener("beforeunload", async ()=>{
-  await deleteDoc(myParticipantRef);
-});
 const userRef = doc(db,"users",currentUser.uid);
 // 🔔 مراقبة الموافقة على طلب الاستبدال
 let alreadyShown = new Set();
