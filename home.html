@@ -1,5 +1,6 @@
 <!DOCTYPE html>  <html lang="ar">  
-<head>  
+<head>  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f7b500">
 <meta charset="UTF-8">  
 <meta name="viewport" content="width=device-width, initial-scale=1.0">  
 <title>الجوائز</title>  <style>  
@@ -1509,6 +1510,11 @@ window.confirmRedeem = async function(){
   }
 
 };
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
+}
 </script>
 <div class="custom-popup" id="redeemModal">
   <div class="popup-box">
