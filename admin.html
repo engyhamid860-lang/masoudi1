@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MASOUDI ADMIN</title>
+<title>MASOUDI ADMIN SYSTEM</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -16,13 +16,15 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Segoe UI;
+font-family:'Segoe UI',Tahoma;
 }
 
 body{
-background:#f3eaf1;
 display:flex;
 height:100vh;
+background:linear-gradient(135deg,#0f172a,#020617);
+color:white;
+overflow:hidden;
 }
 
 /* SIDEBAR */
@@ -30,52 +32,68 @@ height:100vh;
 .sidebar{
 
 width:260px;
-background:white;
-padding:20px;
-border-radius:20px;
-margin:20px;
+background:rgba(15,23,42,.95);
 
-box-shadow:0 10px 40px rgba(0,0,0,.1);
+backdrop-filter:blur(10px);
+
+padding:25px;
 
 display:flex;
 flex-direction:column;
-gap:15px;
+
+gap:10px;
+
+border-right:1px solid rgba(255,255,255,.05);
 
 }
 
 .logo{
-font-size:22px;
-font-weight:bold;
-margin-bottom:20px;
+
+font-size:24px;
+font-weight:800;
+color:#f7b500;
+margin-bottom:25px;
+letter-spacing:2px;
+
 }
 
-.menu{
-display:flex;
-flex-direction:column;
-gap:10px;
-}
+/* MENU */
 
-.menu button{
+.menuBtn{
 
-background:none;
+background:transparent;
+
 border:none;
-padding:12px;
+
+padding:14px;
+
 border-radius:10px;
+
+color:#cbd5f5;
 
 cursor:pointer;
 
 text-align:right;
 
-font-size:15px;
+font-size:14px;
 
 transition:.3s;
 
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
 }
 
-.menu button:hover{
+.menuBtn:hover{
 
-background:#f1f1f1;
-transform:translateX(-5px);
+background:#1e293b;
+
+color:white;
+
+transform:translateX(-4px);
 
 }
 
@@ -84,52 +102,95 @@ transform:translateX(-5px);
 .main{
 
 flex:1;
-padding:30px;
 
 display:flex;
+
 flex-direction:column;
-gap:20px;
+
+overflow:hidden;
 
 }
 
-.topbar{
+/* HEADER */
+
+.header{
+
+background:rgba(2,6,23,.9);
+
+padding:18px;
+
+border-bottom:1px solid rgba(255,255,255,.05);
 
 display:flex;
+
 justify-content:space-between;
+
 align-items:center;
 
-}
-
-.search{
-
-padding:10px;
-border-radius:10px;
-border:none;
-background:white;
-
-width:300px;
-
-box-shadow:0 5px 20px rgba(0,0,0,.1);
+font-size:18px;
 
 }
 
-/* CARDS */
+/* CONTENT */
+
+.content{
+
+padding:25px;
+
+overflow:auto;
+
+flex:1;
+
+}
+
+/* SECTIONS */
+
+.section{
+
+display:none;
+
+animation:fade .3s ease;
+
+}
+
+.section.active{
+
+display:block;
+
+}
+
+@keyframes fade{
+
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1}
+
+}
+
+/* DASHBOARD CARDS */
 
 .cards{
 
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+
 gap:20px;
+
+margin-bottom:25px;
 
 }
 
 .card{
 
-background:white;
-padding:20px;
+background:linear-gradient(145deg,#1e293b,#0f172a);
+
+padding:22px;
+
 border-radius:15px;
 
-box-shadow:0 10px 30px rgba(0,0,0,.1);
+text-align:center;
+
+box-shadow:0 10px 30px rgba(0,0,0,.4);
 
 transition:.3s;
 
@@ -139,58 +200,63 @@ transition:.3s;
 
 transform:translateY(-5px);
 
+box-shadow:0 20px 40px rgba(0,0,0,.6);
+
 }
 
-/* STATS */
-
-.stat{
+.card h2{
 
 font-size:28px;
-font-weight:bold;
+
+margin-top:10px;
+
+color:#f7b500;
 
 }
 
-/* CONTENT GRID */
-
-.grid{
-
-display:grid;
-grid-template-columns:2fr 1fr;
-gap:20px;
-
-}
-
-/* LIST */
-
-.list{
-
-background:white;
-padding:20px;
-border-radius:15px;
-
-box-shadow:0 10px 30px rgba(0,0,0,.1);
-
-}
-
-/* USERS TABLE */
+/* TABLE */
 
 table{
 
 width:100%;
+
 border-collapse:collapse;
 
+background:#020617;
+
+border-radius:12px;
+
+overflow:hidden;
+
 }
 
-th,td{
+th{
+
+background:#020617;
+
+font-weight:600;
+
+padding:12px;
+
+color:#94a3b8;
+
+font-size:13px;
+
+}
+
+td{
 
 padding:10px;
-text-align:center;
+
+border-bottom:1px solid #1e293b;
+
+font-size:13px;
 
 }
 
-tr{
+tr:hover{
 
-border-bottom:1px solid #eee;
+background:#1e293b;
 
 }
 
@@ -198,124 +264,168 @@ border-bottom:1px solid #eee;
 
 .btn{
 
+padding:6px 12px;
+
 border:none;
-padding:6px 10px;
+
 border-radius:6px;
+
 cursor:pointer;
+
+font-size:12px;
+
+transition:.3s;
 
 }
 
-.green{background:#00c853;color:white}
-.red{background:#ff5252;color:white}
-.blue{background:#2979ff;color:white}
-.orange{background:#ff9100;color:white}
+.btn:hover{
 
+transform:scale(1.05);
+
+}
+
+.blue{background:#2563eb}
+.red{background:#dc2626}
+.green{background:#16a34a}
+.orange{background:#ea580c}
+
+/* INPUT */
+
+input{
+
+padding:10px;
+
+border:none;
+
+border-radius:8px;
+
+background:#020617;
+
+color:white;
+
+border:1px solid #1e293b;
+
+margin:5px;
+
+}
+
+input:focus{
+
+outline:none;
+
+border:1px solid #f7b500;
+
+}
+
+/* CARDS LIST */
+
+#redeemsList .card,
+#winnersList .card,
+#logsList .card{
+
+margin-bottom:10px;
+
+padding:15px;
+
+background:#1e293b;
+
+border-radius:10px;
+
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+
+width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:#1e293b;
+
+border-radius:10px;
+
+}
 </style>
 
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-
 <div class="sidebar">
 
 <div class="logo">MASOUDI</div>
 
-<div class="menu">
-
-<button onclick="show('dashboard')">📊 Dashboard</button>
-<button onclick="show('users')">👥 المستخدمين</button>
-<button onclick="show('coins')">💰 العملات</button>
-<button onclick="show('redeems')">💎 الطلبات</button>
-<button onclick="show('games')">🎮 الألعاب</button>
-<button onclick="show('logs')">🪙 السجل</button>
-<button onclick="logout()">🚪 خروج</button>
-
-</div>
+<button class="menuBtn" onclick="showSection('dashboard')">📊 Dashboard</button>
+<button class="menuBtn" onclick="showSection('users')">👥 المستخدمين</button>
+<button class="menuBtn" onclick="showSection('redeems')">💎 الطلبات</button>
+<button class="menuBtn" onclick="showSection('winners')">🏆 الفائزين</button>
+<button class="menuBtn" onclick="showSection('ban')">🚫 إدارة الحظر</button>
+<button class="menuBtn" onclick="showSection('coins')">💰 إرسال نقاط</button>
+<button class="menuBtn" onclick="showSection('edit')">⚙ تعديل الحساب</button>
+<button class="menuBtn" onclick="showSection('logs')">🪙 سجل النقاط</button>
 
 </div>
-
-<!-- MAIN -->
 
 <div class="main">
 
-<div class="topbar">
-
-<h2>Hello Admin</h2>
-
-<input class="search" placeholder="بحث...">
-
+<div class="header">
+<h2>لوحة التحكم</h2>
 </div>
+
+<div class="content">
 
 <!-- DASHBOARD -->
 
-<div id="dashboard">
+<div id="dashboard" class="section active">
 
 <div class="cards">
 
 <div class="card">
-Users
-<div class="stat" id="usersCount">0</div>
+👥 المستخدمين
+<h2 id="statUsers">0</h2>
 </div>
 
 <div class="card">
-Coins
-<div class="stat" id="coinsCount">0</div>
+🎁 الجوائز
+<h2 id="statPrizes">0</h2>
 </div>
 
 <div class="card">
-Redeems
-<div class="stat" id="redeemsCount">0</div>
-</div>
-
-<div class="card">
-Winners
-<div class="stat" id="winnersCount">0</div>
+💎 الطلبات
+<h2 id="statRedeems">0</h2>
 </div>
 
 </div>
-
-<div class="grid">
-
-<div class="list">
-
-<h3>Analytics</h3>
 
 <canvas id="chart"></canvas>
 
 </div>
 
-<div class="list">
-
-<h3>Notifications</h3>
-
-<div id="notifications"></div>
-
-</div>
-
-</div>
-
-</div>
-
 <!-- USERS -->
 
-<div id="users" style="display:none">
+<div id="users" class="section">
 
 <h2>المستخدمين</h2>
+
+<input id="searchUser" placeholder="بحث">
 
 <table>
 
 <thead>
 
 <tr>
-
 <th>ID</th>
+<th>الصورة</th>
 <th>الاسم</th>
 <th>النقاط</th>
+<th>الحالة</th>
+<th>إضافة</th>
 <th>حظر</th>
+<th>فك الحظر</th>
 <th>حذف</th>
-
 </tr>
 
 </thead>
@@ -326,21 +436,401 @@ Winners
 
 </div>
 
+<!-- REDEEMS -->
+
+<div id="redeems" class="section">
+
+<h2>طلبات الاستبدال</h2>
+
+<div id="redeemsList"></div>
+
 </div>
 
-<script>
+<!-- WINNERS -->
 
-function show(id){
+<div id="winners" class="section">
 
-document.querySelectorAll(".main > div")
-.forEach(el=>el.style.display="none")
+<h2>الفائزين</h2>
 
-document.getElementById(id).style.display="block"
+<div id="winnersList"></div>
+
+</div>
+
+<!-- BAN -->
+
+<div id="ban" class="section">
+
+<h2>إدارة الحظر</h2>
+
+<input id="banId" placeholder="ID المستخدم">
+
+<br>
+
+<button class="btn orange" onclick="banById()">حظر</button>
+<button class="btn green" onclick="unbanById()">فك الحظر</button>
+
+</div>
+
+<!-- SEND COINS -->
+
+<div id="coins" class="section">
+
+<h2>إرسال نقاط</h2>
+
+<input id="coinId" placeholder="ID المستخدم">
+<input id="coinAmount" placeholder="عدد النقاط">
+
+<br>
+
+<button class="btn blue" onclick="sendCoins()">إرسال</button>
+
+</div>
+
+<!-- EDIT USER -->
+
+<div id="edit" class="section">
+
+<h2>تعديل الحساب</h2>
+
+<input id="editId" placeholder="ID المستخدم">
+<input id="editName" placeholder="الاسم">
+<input id="editPhoto" placeholder="الصورة">
+<input id="editPoints" placeholder="النقاط">
+
+<br>
+
+<button class="btn green" onclick="editUser()">حفظ</button>
+
+</div>
+
+<!-- LOGS -->
+
+<div id="logs" class="section">
+
+<h2>سجل تحويل النقاط</h2>
+
+<div id="logsList"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+
+getFirestore,
+collection,
+onSnapshot,
+doc,
+updateDoc,
+deleteDoc,
+increment,
+getDoc,
+addDoc
+
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+authDomain:"popo-da43c.firebaseapp.com",
+projectId:"popo-da43c",
+storageBucket:"popo-da43c.appspot.com",
+messagingSenderId:"570136899084",
+appId:"1:570136899084:web:2a86be16b0ff2261c98829"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+/* ADMIN CHECK */
+
+onAuthStateChanged(auth,async(user)=>{
+
+if(!user){location.href="login.html";return;}
+
+const snap=await getDoc(doc(db,"users",user.uid));
+
+if(!snap.exists()||snap.data().isAdmin!==true){
+
+alert("ليس لديك صلاحية");
+location.href="index.html";
+return;
+
+}
+
+loadUsers();
+loadStats();
+loadRedeems();
+loadWinners();
+loadLogs();
+
+});
+
+/* SWITCH */
+
+window.showSection=(id)=>{
+
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+
+document.getElementById(id).classList.add("active")
+
+}
+
+/* USERS */
+
+function loadUsers(){
+
+onSnapshot(collection(db,"users"),snap=>{
+
+let html=""
+
+snap.forEach(docSnap=>{
+
+const d=docSnap.data()
+const uid=docSnap.id
+
+const status=d.banned?"🚫":"✅"
+
+html+=`
+
+<tr>
+
+<td>${uid}</td>
+
+<td>
+<img src="${d.photo||'https://i.imgur.com/6VBx3io.png'}" width="40">
+</td>
+
+<td>${d.name||"-"}</td>
+
+<td>${d.walletBalance||0}</td>
+
+<td>${status}</td>
+
+<td>
+<input id="p-${uid}" style="width:50px">
+<button onclick="addPoints('${uid}')">+</button>
+</td>
+
+<td>
+<button onclick="banUser('${uid}')">🚫</button>
+</td>
+
+<td>
+<button onclick="unbanUser('${uid}')">✅</button>
+</td>
+
+<td>
+<button onclick="removeUser('${uid}')">🗑</button>
+</td>
+
+</tr>
+
+`
+
+})
+
+usersTable.innerHTML=html
+
+})
+
+}
+
+/* ADD POINTS */
+
+window.addPoints=async(uid)=>{
+
+const val=document.getElementById("p-"+uid).value
+
+if(!val)return
+
+await updateDoc(doc(db,"users",uid),{
+walletBalance:increment(Number(val))
+})
+
+await addDoc(collection(db,"coinLogs"),{
+userId:uid,
+amount:Number(val),
+time:new Date()
+})
+
+}
+
+/* BAN */
+
+window.banUser=async(uid)=>{
+
+await updateDoc(doc(db,"users",uid),{
+banned:true
+})
+
+}
+
+/* UNBAN */
+
+window.unbanUser=async(uid)=>{
+
+await updateDoc(doc(db,"users",uid),{
+banned:false
+})
+
+}
+
+/* DELETE */
+
+window.removeUser=async(uid)=>{
+
+if(confirm("حذف المستخدم؟")){
+await deleteDoc(doc(db,"users",uid))
+}
+
+}
+
+/* BAN BY ID */
+
+window.banById=async()=>{
+const id=banId.value
+await updateDoc(doc(db,"users",id),{banned:true})
+}
+
+/* UNBAN BY ID */
+
+window.unbanById=async()=>{
+const id=banId.value
+await updateDoc(doc(db,"users",id),{banned:false})
+}
+
+/* SEND COINS */
+
+window.sendCoins=async()=>{
+
+const id=coinId.value
+const amount=Number(coinAmount.value)
+
+await updateDoc(doc(db,"users",id),{
+walletBalance:increment(amount)
+})
+
+await addDoc(collection(db,"coinLogs"),{
+userId:id,
+amount:amount,
+time:new Date()
+})
+
+}
+
+/* EDIT USER */
+
+window.editUser=async()=>{
+
+const id=editId.value
+
+await updateDoc(doc(db,"users",id),{
+
+name:editName.value,
+photo:editPhoto.value,
+walletBalance:Number(editPoints.value)
+
+})
+
+}
+
+/* REDEEMS */
+
+function loadRedeems(){
+
+onSnapshot(collection(db,"redeemRequests"),snap=>{
+
+let html=""
+
+snap.forEach(docSnap=>{
+
+const d=docSnap.data()
+
+html+=`
+<div class="card">
+<b>${d.userName}</b>
+<p>ID: ${d.playerId}</p>
+<p>Status: ${d.status}</p>
+</div>
+`
+
+})
+
+redeemsList.innerHTML=html
+
+})
+
+}
+
+/* WINNERS */
+
+function loadWinners(){
+
+onSnapshot(collection(db,"prizes"),snap=>{
+
+let html=""
+
+snap.forEach(docSnap=>{
+
+const d=docSnap.data()
+
+if(!d.active){
+
+html+=`<div class="card">🏆 ${d.winner}</div>`
+
+}
+
+})
+
+winnersList.innerHTML=html
+
+})
+
+}
+
+/* LOGS */
+
+function loadLogs(){
+
+onSnapshot(collection(db,"coinLogs"),snap=>{
+
+let html=""
+
+snap.forEach(docSnap=>{
+
+const d=docSnap.data()
+
+html+=`
+
+<div class="card">
+
+المستخدم: ${d.userId}
+
+<br>
+
+النقاط: ${d.amount}
+
+</div>
+
+`
+
+})
+
+logsList.innerHTML=html
+
+})
 
 }
 
 </script>
 
 </body>
-
 </html>
