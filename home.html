@@ -825,6 +825,22 @@ if(!user){
 
 currentUser = user;
 const userRef = doc(db,"users",currentUser.uid);
+onSnapshot(doc(db,"users",currentUser.uid),(snap)=>{
+
+if(!snap.exists()) return;
+
+const data = snap.data();
+
+document.getElementById("userName").innerText =
+data.name || "مستخدم";
+
+document.getElementById("userPhoto").src =
+data.photo || "https://i.imgur.com/6VBx3io.png";
+
+document.getElementById("walletBalance").innerText =
+data.walletBalance || 0;
+
+});
 // 🔔 مراقبة الموافقة على طلب الاستبدال
 let alreadyShown = new Set();
 
