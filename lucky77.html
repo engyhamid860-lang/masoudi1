@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Lucky 77</title>
+
+<style>
+
+body{
+
+margin:0;
+
+font-family:Segoe UI;
+
+height:100vh;
+
+background:
+radial-gradient(circle,#1e3a8a,#020617);
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+color:white;
+
+}
+
+/* GAME BOX */
+
+.game{
+
+width:380px;
+
+background:#0f172a;
+
+border-radius:20px;
+
+padding:20px;
+
+text-align:center;
+
+box-shadow:0 20px 40px rgba(0,0,0,.6);
+
+}
+
+/* TITLE */
+
+.title{
+
+font-size:24px;
+
+margin-bottom:5px;
+
+}
+
+/* BALANCE */
+
+.balance{
+
+background:#1e293b;
+
+padding:8px;
+
+border-radius:10px;
+
+margin-bottom:10px;
+
+}
+
+/* POINTER */
+
+.pointer{
+
+width:0;
+
+height:0;
+
+border-left:20px solid transparent;
+
+border-right:20px solid transparent;
+
+border-bottom:35px solid red;
+
+margin:auto;
+
+}
+
+/* WHEEL */
+
+.wheelBox{
+
+margin-top:10px;
+
+}
+
+#wheel{
+
+width:300px;
+
+transition:transform 4s cubic-bezier(.17,.67,.33,1.34);
+
+}
+
+/* BET BUTTON */
+
+.betBtn{
+
+background:#2563eb;
+
+border:none;
+
+padding:10px 16px;
+
+margin:5px;
+
+border-radius:10px;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+.betBtn.active{
+
+background:#22c55e;
+
+}
+
+/* SPIN */
+
+.spin{
+
+background:#f59e0b;
+
+border:none;
+
+padding:12px 30px;
+
+border-radius:12px;
+
+font-size:18px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+color:white;
+
+margin-top:10px;
+
+}
+
+/* RESULT */
+
+.result{
+
+margin-top:10px;
+
+font-size:18px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="game">
+
+<div class="title">
+🎡 Lucky 77
+</div>
+
+<div class="balance">
+الرصيد: <span id="balance">5000</span>
+</div>
+
+<div class="pointer"></div>
+
+<div class="wheelBox">
+<img src="wheel.png" id="wheel">
+</div>
+
+<div>
+
+<button class="betBtn" onclick="setBet(100,this)">100</button>
+<button class="betBtn" onclick="setBet(500,this)">500</button>
+<button class="betBtn" onclick="setBet(1000,this)">1K</button>
+<button class="betBtn" onclick="setBet(5000,this)">5K</button>
+
+</div>
+
+<button class="spin" onclick="spin()">SPIN</button>
+
+<div class="result">
+النتيجة: <span id="result">-</span>
+</div>
+
+</div>
+
+<script>
+
+let balance=5000
+let bet=0
+let spinning=false
+
+const wheel=document.getElementById("wheel")
+
+const items=[
+"🍉",
+"🍇",
+"🍒",
+"🍋",
+"77",
+"🍉",
+"🍇",
+"🍒"
+]
+
+function setBet(v,btn){
+
+document.querySelectorAll(".betBtn").forEach(b=>b.classList.remove("active"))
+
+btn.classList.add("active")
+
+bet=v
+
+}
+
+function spin(){
+
+if(spinning) return
+
+if(bet===0){
+
+alert("اختر الرهان")
+
+return
+
+}
+
+if(balance<bet){
+
+alert("الرصيد غير كافي")
+
+return
+
+}
+
+spinning=true
+
+balance-=bet
+
+document.getElementById("balance").innerText=balance
+
+let deg=Math.random()*2000+2000
+
+wheel.style.transform=`rotate(${deg}deg)`
+
+setTimeout(()=>{
+
+let result=items[Math.floor(Math.random()*items.length)]
+
+document.getElementById("result").innerText=result
+
+let reward=0
+
+if(result==="77") reward=bet*8
+if(result==="🍉") reward=bet*2
+if(result==="🍇") reward=bet*2
+if(result==="🍒") reward=bet*3
+
+if(reward>0){
+
+balance+=reward
+
+document.getElementById("balance").innerText=balance
+
+alert("🎉 ربحت "+reward)
+
+}
+
+bet=0
+
+document.querySelectorAll(".betBtn").forEach(b=>b.classList.remove("active"))
+
+spinning=false
+
+},4000)
+
+}
+
+</script>
+
+</body>
+</html>
