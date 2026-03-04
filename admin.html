@@ -3,385 +3,522 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة تحكم الأدمن</title>
+
+<title>MASOUDI Admin</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial;background:#0f172a;color:#fff;padding:20px}
-.header{
-  background:linear-gradient(135deg,#f7b500,#ffcc33);
-  padding:20px;border-radius:20px;
-  text-align:center;color:#000;margin-bottom:20px
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial;
 }
+
+body{
+background:#0f172a;
+color:white;
+display:flex;
+height:100vh;
+overflow:hidden;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:230px;
+background:#020617;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.sidebar h2{
+color:#f7b500;
+margin-bottom:20px;
+}
+
+.sidebar button{
+background:#1e293b;
+border:none;
+padding:12px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+text-align:right;
+}
+
+.sidebar button:hover{
+background:#334155;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+padding:20px;
+overflow:auto;
+}
+
+.section{
+display:none;
+}
+
+.section.active{
+display:block;
+}
+
+/* CARDS */
+
 .card{
-  background:#1e293b;padding:15px;
-  border-radius:15px;margin-bottom:12px
+background:#1e293b;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
 }
-button{
-  margin-top:6px;padding:6px 10px;
-  border:none;border-radius:6px;
-  cursor:pointer;color:#fff
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+gap:10px;
 }
+
+button.action{
+margin-top:6px;
+padding:6px 10px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+color:white;
+}
+
 .green{background:#16a34a}
 .red{background:#dc2626}
 .blue{background:#2563eb}
 .orange{background:#ea580c}
-input{padding:5px;border-radius:5px;border:none;margin-top:5px}
-img{border-radius:8px}
+
+input{
+padding:6px;
+border-radius:6px;
+border:none;
+margin-top:5px;
+width:100%;
+}
+
+img{
+border-radius:8px;
+}
+
+.stat{
+background:#1e293b;
+padding:15px;
+border-radius:10px;
+text-align:center;
+}
+
 </style>
+
 </head>
 <body>
 
-<div class="header">
-<h2>📊 لوحة تحكم الأدمن</h2>
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2>MASOUDI</h2>
+
+<button onclick="showSection('dashboard')">📊 Dashboard</button>
+<button onclick="showSection('usersSection')">👥 Users</button>
+<button onclick="showSection('prizesSection')">🎁 Prizes</button>
+<button onclick="showSection('redeemsSection')">💎 Redeems</button>
+
 </div>
 
-<h3>👥 المستخدمين</h3>
-<div id="users"></div>
+<!-- MAIN -->
 
-<h3>🎁 الجوائز</h3>
-<div id="prizes"></div>
+<div class="main">
 
-<h3>📦 طلبات الاستبدال</h3>
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="section active">
+
+<h2>📊 Dashboard</h2>
+
+<div class="grid">
+
+<div class="stat">
+<h3 id="statUsers">0</h3>
+<p>Users</p>
+</div>
+
+<div class="stat">
+<h3 id="statPrizes">0</h3>
+<p>Prizes</p>
+</div>
+
+<div class="stat">
+<h3 id="statRedeems">0</h3>
+<p>Redeems</p>
+</div>
+
+</div>
+
+</div>
+
+<!-- USERS -->
+
+<div id="usersSection" class="section">
+
+<h2>👥 Users</h2>
+
+<input id="searchUser" placeholder="بحث عن مستخدم">
+
+<div id="users" class="grid"></div>
+
+</div>
+
+<!-- PRIZES -->
+
+<div id="prizesSection" class="section">
+
+<h2>🎁 Prizes</h2>
+
+<div class="card">
+
+<h3>إضافة جائزة</h3>
+
+<input id="newImage" placeholder="رابط الصورة">
+<input id="targetPoints" placeholder="النقاط المطلوبة">
+
+<button class="action green" onclick="createPrize()">إنشاء</button>
+
+</div>
+
+<div id="prizes" class="grid"></div>
+
+</div>
+
+<!-- REDEEMS -->
+
+<div id="redeemsSection" class="section">
+
+<h2>💎 Redeem Requests</h2>
+
 <div id="redeems"></div>
 
-<div id="participantsBox" style="display:none;background:#000000cc;padding:20px;position:fixed;inset:0;overflow:auto;"></div>
+</div>
+
+</div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 import {
-  getFirestore,
-  collection,
-  onSnapshot,
-  doc,
-  updateDoc,
-  getDoc,
-  deleteDoc,
-  increment,
-  setDoc,
-  getDocs,
-  query,
-  where
+getFirestore,
+collection,
+onSnapshot,
+doc,
+updateDoc,
+deleteDoc,
+increment,
+setDoc,
+getDoc,
+getDocs,
+query,
+where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
-  authDomain: "popo-da43c.firebaseapp.com",
-  projectId: "popo-da43c",
-  storageBucket: "popo-da43c.firebasestorage.app",
-  messagingSenderId: "570136899084",
-  appId: "1:570136899084:web:2a86be16b0ff2261c98829"
+
+apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+authDomain: "popo-da43c.firebaseapp.com",
+projectId: "popo-da43c",
+storageBucket: "popo-da43c.firebasestorage.app",
+messagingSenderId: "570136899084",
+appId: "1:570136899084:web:2a86be16b0ff2261c98829"
+
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ================= حماية الأدمن ================= */
+/* حماية الأدمن */
 
 onAuthStateChanged(auth, async(user)=>{
 
-  if(!user){
-    location.href="login.html";
-    return;
-  }
+if(!user){
+location.href="login.html";
+return;
+}
 
-  const snap = await getDoc(doc(db,"users",user.uid));
-  if(!snap.exists() || snap.data().isAdmin !== true){
-    alert("هذا الحساب ليس أدمن");
-    location.href="index.html";
-    return;
-  }
+const snap = await getDoc(doc(db,"users",user.uid));
 
-  loadUsers();
-  loadPrizes();
-  loadRedeems();
+if(!snap.exists() || snap.data().isAdmin !== true){
+
+alert("هذا الحساب ليس أدمن");
+
+location.href="index.html";
+
+return;
+
+}
+
+loadStats();
+loadUsers();
+loadPrizes();
+loadRedeems();
+
 });
 
-/* ================= المستخدمين ================= */
+/* تبديل الأقسام */
+
+window.showSection = (id)=>{
+
+document.querySelectorAll(".section").forEach(sec=>{
+sec.classList.remove("active")
+})
+
+document.getElementById(id).classList.add("active")
+
+}
+
+/* الإحصائيات */
+
+function loadStats(){
+
+onSnapshot(collection(db,"users"),snap=>{
+document.getElementById("statUsers").innerText=snap.size
+})
+
+onSnapshot(collection(db,"prizes"),snap=>{
+document.getElementById("statPrizes").innerText=snap.size
+})
+
+onSnapshot(collection(db,"redeemRequests"),snap=>{
+document.getElementById("statRedeems").innerText=snap.size
+})
+
+}
+
+/* USERS */
 
 function loadUsers(){
 
-  onSnapshot(collection(db,"users"), async snapshot=>{
+onSnapshot(collection(db,"users"),snap=>{
 
-    let html = "";
+let html=""
 
-    for (const docSnap of snapshot.docs){
+snap.forEach(docSnap=>{
 
-      const d = docSnap.data();
-      const uid = docSnap.id;
+const d=docSnap.data()
 
-      // 🔥 حساب المشاركات الحقيقية
-      const partSnap = await getDocs(
-        query(collection(db,"prizeParticipants"),
-        where("userId","==",uid))
-      );
+const uid=docSnap.id
 
-      // 🔥 حساب مرات الفوز الحقيقية
-      const winSnap = await getDocs(
-        query(collection(db,"prizes"),
-        where("winner","==",d.name || ""))
-      );
+html+=`
 
-      // 🔥 حساب طلبات الاستبدال
-      const redeemSnap = await getDocs(
-        query(collection(db,"redeemRequests"),
-        where("userId","==",uid))
-      );
+<div class="card">
 
-      html += `
-      <div class="card">
-        <img src="${d.photo || 'https://i.imgur.com/6VBx3io.png'}" width="50">
-        <b>${d.name || "-"}</b>
+<img src="${d.photo || 'https://i.imgur.com/6VBx3io.png'}" width="50">
 
-        <p>💰 الرصيد: ${d.walletBalance || 0}</p>
-        <p>🎁 مشاركات: ${partSnap.size}</p>
-        <p>🏆 مرات الفوز: ${winSnap.size}</p>
-        <p>💎 طلبات الاستبدال: ${redeemSnap.size}</p>
+<h3>${d.name || "-"}</h3>
 
-        <input type="number" id="points-${uid}" placeholder="عدد النقاط">
+<p>💰 ${d.walletBalance || 0}</p>
 
-        <button class="blue" onclick="addPoints('${uid}')">
-        ➕ إضافة نقاط
-        </button>
+<input id="points-${uid}" placeholder="عدد النقاط">
 
-        <button class="red" onclick="removeUser('${uid}')">
-        🗑 حذف
-        </button>
-      </div>
-      `;
-    }
+<button class="action blue" onclick="addPoints('${uid}')">
+إضافة نقاط
+</button>
 
-    document.getElementById("users").innerHTML = html;
+<button class="action red" onclick="removeUser('${uid}')">
+حذف
+</button>
 
-  });
+</div>
+
+`
+
+})
+
+document.getElementById("users").innerHTML=html
+
+})
+
 }
 
 window.addPoints = async(uid)=>{
-  const val = document.getElementById(`points-${uid}`).value;
-  if(!val) return;
 
-  await updateDoc(doc(db,"users",uid),{
-    walletBalance: increment(Number(val))
-  });
+const val=document.getElementById(`points-${uid}`).value
 
-  alert("تم إضافة النقاط ✅");
-};
+if(!val)return
+
+await updateDoc(doc(db,"users",uid),{
+
+walletBalance:increment(Number(val))
+
+})
+
+alert("تم إضافة النقاط")
+
+}
 
 window.removeUser = async(uid)=>{
-  if(confirm("هل تريد حذف المستخدم؟")){
-    await deleteDoc(doc(db,"users",uid));
-  }
-};
 
-/* ================= الجوائز ================= */
+if(confirm("حذف المستخدم؟")){
+
+await deleteDoc(doc(db,"users",uid))
+
+}
+
+}
+
+/* PRIZES */
 
 function loadPrizes(){
 
-  onSnapshot(collection(db,"prizes"), snapshot=>{
+onSnapshot(collection(db,"prizes"),snap=>{
 
-    let html="";
+let html=""
 
-    snapshot.forEach(docSnap=>{
-      const d = docSnap.data();
+snap.forEach(docSnap=>{
 
-      html += `
-      <div class="card">
-        <img src="${d.image}" width="100%">
-        <p>${d.currentPoints}/${d.targetPoints}</p>
-        <p>الحالة: ${d.active ? "مفتوحة" : "مغلقة"}</p>
+const d=docSnap.data()
 
-        <button class="blue"
-        onclick="viewParticipants('${docSnap.id}')">
-        📊 عرض المشاركين
-        </button>
+html+=`
 
-        ${
-          d.active
-          ? `<button class="green"
-              onclick="closePrize('${docSnap.id}')">
-              🔒 إغلاق يدوي
-             </button>`
-          : `<button class="orange"
-              onclick="reopenPrize('${docSnap.id}')">
-              ♻ إعادة فتح
-             </button>`
-        }
+<div class="card">
 
-        <button class="red"
-        onclick="deletePrize('${docSnap.id}')">
-        🗑 حذف
-        </button>
-      </div>
-      `;
-    });
+<img src="${d.image}" width="100%">
 
-    document.getElementById("prizes").innerHTML = html;
-  });
+<p>${d.currentPoints}/${d.targetPoints}</p>
+
+<p>${d.active ? "مفتوحة":"مغلقة"}</p>
+
+<button class="action red"
+onclick="deletePrize('${docSnap.id}')">
+
+حذف
+
+</button>
+
+</div>
+
+`
+
+})
+
+document.getElementById("prizes").innerHTML=html
+
+})
+
 }
 
-/* عرض المشاركين واختيار الأعلى */
+window.createPrize = async ()=>{
 
-window.viewParticipants = async(prizeId)=>{
+const img=document.getElementById("newImage").value
 
-  const box = document.getElementById("participantsBox");
-  box.style.display="block";
-  box.innerHTML="<h3>📊 المشاركين</h3>";
+const target=document.getElementById("targetPoints").value
 
-  const q = query(collection(db,"prizeParticipants"),
-                  where("prizeId","==",prizeId));
+await setDoc(doc(collection(db,"prizes")),{
 
-  const snap = await getDocs(q);
+image:img,
 
-  let usersMap = {};
+targetPoints:Number(target),
 
-  snap.forEach(docSnap=>{
-    const data = docSnap.data();
+currentPoints:0,
 
-    if(!usersMap[data.userId]){
-      usersMap[data.userId]={
-        name:data.name,
-        photo:data.photo,
-        totalPoints:0
-      };
-    }
+active:true,
 
-    usersMap[data.userId].totalPoints += data.points;
-  });
+winner:""
 
-  const sorted = Object.entries(usersMap)
-  .sort((a,b)=> b[1].totalPoints - a[1].totalPoints);
+})
 
-  sorted.forEach(([uid,user])=>{
-    box.innerHTML += `
-    <div class="card">
-      <img src="${user.photo}" width="50">
-      <h4>${user.name}</h4>
-      <p>إجمالي النقاط: ${user.totalPoints}</p>
-    </div>
-    `;
-  });
+alert("تم إنشاء الجائزة")
 
-  if(sorted.length > 0){
-
-  const top = sorted[0];
-
-  box.innerHTML += `
-  <button class="green"
-  onclick="chooseWinner('${prizeId}',
-  '${top[0]}',
-  '${top[1].name}',
-  '${top[1].photo}')">
-  👑 اختيار صاحب أعلى نقاط
-  </button>
-  `;
 }
-
-  box.innerHTML += `
-  <button class="red" onclick="closeParticipants()">
-  إغلاق
-  </button>
-  `;
-};
-
-window.closeParticipants=()=>{
-  document.getElementById("participantsBox").style.display="none";
-};
-
-/* اختيار الفائز */
-
-window.chooseWinner = async(prizeId,uid,name,photo)=>{
-
-  await updateDoc(doc(db,"prizes",prizeId),{
-    active:false,
-    winner:name
-  });
-
-  await updateDoc(doc(db,"users",uid),{
-    totalWins: increment(1)
-  });
-
-  await setDoc(doc(db,"liveActivity","current"),{
-    type:"winner",
-    name:name,
-    photo:photo,
-    message:"فاز بالجائزة الكبرى 🏆",
-    time: Date.now()+Math.random()
-  });
-
-  alert("تم اختيار الفائز 👑");
-  closeParticipants();
-};
-
-window.closePrize = async(id)=>{
-  await updateDoc(doc(db,"prizes",id),{
-    active:false
-  });
-};
-
-window.reopenPrize = async(id)=>{
-  await updateDoc(doc(db,"prizes",id),{
-    active:true,
-    currentPoints:0,
-    winner:""
-  });
-};
 
 window.deletePrize = async(id)=>{
-  if(confirm("حذف الجائزة؟")){
-    await deleteDoc(doc(db,"prizes",id));
-  }
-};
 
-/* ================= طلبات الاستبدال ================= */
+if(confirm("حذف الجائزة؟")){
+
+await deleteDoc(doc(db,"prizes",id))
+
+}
+
+}
+
+/* REDEEMS */
 
 function loadRedeems(){
 
-  onSnapshot(collection(db,"redeemRequests"), snapshot=>{
+onSnapshot(collection(db,"redeemRequests"),snap=>{
 
-    let html="";
+let html=""
 
-    snapshot.forEach(docSnap=>{
-      const d = docSnap.data();
+snap.forEach(docSnap=>{
 
-      html += `
-      <div class="card">
-        <b>${d.userName}</b>
-        <p>ID: ${d.playerId}</p>
-        <p>الحالة: ${d.status}</p>
+const d=docSnap.data()
 
-        ${
-          d.status==="pending"
-          ? `<button class="green"
-             onclick="approveRedeem('${docSnap.id}','${d.userId}')">
-             ✔ موافقة
-             </button>`
-          : ""
-        }
-      </div>
-      `;
-    });
+html+=`
 
-    document.getElementById("redeems").innerHTML = html;
-  });
+<div class="card">
+
+<h3>${d.userName}</h3>
+
+<p>ID: ${d.playerId}</p>
+
+<p>Status: ${d.status}</p>
+
+${
+d.status==="pending"
+?
+
+`<button class="action green"
+onclick="approveRedeem('${docSnap.id}','${d.userId}')">
+
+موافقة
+
+</button>`
+
+:""
+
+}
+
+</div>
+
+`
+
+})
+
+document.getElementById("redeems").innerHTML=html
+
+})
+
 }
 
 window.approveRedeem = async(id,uid)=>{
 
-  await updateDoc(doc(db,"redeemRequests",id),{
-    status:"approved",
-    approvedAt:Date.now()
-  });
+await updateDoc(doc(db,"redeemRequests",id),{
 
-  await updateDoc(doc(db,"users",uid),{
-    totalRedeems: increment(1)
-  });
+status:"approved"
 
-  alert("تم قبول الطلب ✅");
-};
+})
+
+await updateDoc(doc(db,"users",uid),{
+
+totalRedeems:increment(1)
+
+})
+
+alert("تمت الموافقة")
+
+}
 
 </script>
+
 </body>
 </html>
