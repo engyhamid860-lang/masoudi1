@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>MASOUDI Admin</title>
-
-<style>
+<!DOCTYPE html><html lang="ar" dir="rtl">
+<head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MASOUDI Admin Panel</title><style>
 
 *{
-box-sizing:border-box;
 margin:0;
 padding:0;
-font-family:Arial;
+box-sizing:border-box;
+font-family:Tahoma;
 }
 
 body{
@@ -26,66 +20,120 @@ overflow:hidden;
 /* SIDEBAR */
 
 .sidebar{
-width:230px;
+width:240px;
 background:#020617;
 padding:20px;
 display:flex;
 flex-direction:column;
 gap:10px;
+border-left:1px solid #1e293b;
 }
 
-.sidebar h2{
+.logo{
+font-size:22px;
+font-weight:bold;
 color:#f7b500;
 margin-bottom:20px;
 }
 
-.sidebar button{
-background:#1e293b;
+.nav-btn{
+background:none;
 border:none;
+color:#cbd5f5;
 padding:12px;
 border-radius:8px;
-color:white;
-cursor:pointer;
 text-align:right;
+cursor:pointer;
+font-size:15px;
 }
 
-.sidebar button:hover{
-background:#334155;
+.nav-btn:hover{
+background:#1e293b;
+color:white;
 }
 
 /* MAIN */
 
 .main{
 flex:1;
+display:flex;
+flex-direction:column;
+}
+
+/* HEADER */
+
+.header{
+background:#020617;
+padding:15px 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #1e293b;
+}
+
+.header h2{
+font-size:18px;
+}
+
+.search{
+background:#1e293b;
+border:none;
+padding:8px;
+border-radius:6px;
+color:white;
+}
+
+/* CONTENT */
+
+.content{
 padding:20px;
 overflow:auto;
-}
-
-.section{
-display:none;
-}
-
-.section.active{
-display:block;
+flex:1;
 }
 
 /* CARDS */
 
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
 .card{
 background:#1e293b;
-padding:15px;
+padding:20px;
+border-radius:12px;
+}
+
+.card h3{
+font-size:26px;
+margin-bottom:5px;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+background:#1e293b;
 border-radius:10px;
-margin-bottom:10px;
+overflow:hidden;
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-gap:10px;
+th,td{
+padding:12px;
+border-bottom:1px solid #334155;
+text-align:center;
 }
 
-button.action{
-margin-top:6px;
+th{
+background:#020617;
+}
+
+/* BUTTONS */
+
+.btn{
 padding:6px 10px;
 border:none;
 border-radius:6px;
@@ -98,123 +146,39 @@ color:white;
 .blue{background:#2563eb}
 .orange{background:#ea580c}
 
-input{
-padding:6px;
-border-radius:6px;
-border:none;
-margin-top:5px;
-width:100%;
+.section{
+display:none;
 }
 
-img{
-border-radius:8px;
+.section.active{
+display:block;
 }
 
-.stat{
-background:#1e293b;
-padding:15px;
-border-radius:10px;
-text-align:center;
-}
+</style></head><body><!-- SIDEBAR --><div class="sidebar"><div class="logo">MASOUDI</div><button class="nav-btn" onclick="showSection('dashboard')">📊 Dashboard</button>
+<button class="nav-btn" onclick="showSection('users')">👥 المستخدمين</button>
+<button class="nav-btn" onclick="showSection('prizes')">🎁 الجوائز</button>
+<button class="nav-btn" onclick="showSection('redeems')">💎 طلبات الشراء</button>
 
-</style>
-
-</head>
-<body>
-
-<!-- SIDEBAR -->
-
-<div class="sidebar">
-
-<h2>MASOUDI</h2>
-
-<button onclick="showSection('dashboard')">📊 Dashboard</button>
-<button onclick="showSection('usersSection')">👥 Users</button>
-<button onclick="showSection('prizesSection')">🎁 Prizes</button>
-<button onclick="showSection('redeemsSection')">💎 Redeems</button>
-
-</div>
-
-<!-- MAIN -->
-
-<div class="main">
-
-<!-- DASHBOARD -->
-
-<div id="dashboard" class="section active">
-
-<h2>📊 Dashboard</h2>
-
-<div class="grid">
-
-<div class="stat">
+</div><!-- MAIN --><div class="main"><div class="header"><h2>لوحة التحكم</h2><input id="searchUser" class="search" placeholder="بحث مستخدم"></div><div class="content"><!-- DASHBOARD --><div id="dashboard" class="section active"><div class="cards"><div class="card">
 <h3 id="statUsers">0</h3>
-<p>Users</p>
-</div>
-
-<div class="stat">
+<p>المستخدمين</p>
+</div><div class="card">
 <h3 id="statPrizes">0</h3>
-<p>Prizes</p>
-</div>
-
-<div class="stat">
+<p>الجوائز</p>
+</div><div class="card">
 <h3 id="statRedeems">0</h3>
-<p>Redeems</p>
-</div>
-
-</div>
-
-</div>
-
-<!-- USERS -->
-
-<div id="usersSection" class="section">
-
-<h2>👥 Users</h2>
-
-<input id="searchUser" placeholder="بحث عن مستخدم">
-
-<div id="users" class="grid"></div>
-
-</div>
-
-<!-- PRIZES -->
-
-<div id="prizesSection" class="section">
-
-<h2>🎁 Prizes</h2>
-
-<div class="card">
-
-<h3>إضافة جائزة</h3>
-
-<input id="newImage" placeholder="رابط الصورة">
-<input id="targetPoints" placeholder="النقاط المطلوبة">
-
-<button class="action green" onclick="createPrize()">إنشاء</button>
-
-</div>
-
-<div id="prizes" class="grid"></div>
-
-</div>
-
-<!-- REDEEMS -->
-
-<div id="redeemsSection" class="section">
-
-<h2>💎 Redeem Requests</h2>
-
-<div id="redeems"></div>
-
-</div>
-
-</div>
-
-<script type="module">
+<p>طلبات الشراء</p>
+</div></div></div><!-- USERS --><div id="users" class="section"><h2 style="margin-bottom:10px">المستخدمين</h2><table><thead>
+<tr>
+<th>الصورة</th>
+<th>الاسم</th>
+<th>النقاط</th>
+<th>إضافة نقاط</th>
+<th>إجراء</th>
+</tr>
+</thead><tbody id="usersTable"></tbody></table></div><!-- PRIZES --><div id="prizes" class="section"><h2 style="margin-bottom:10px">الجوائز</h2><div id="prizesList"></div></div><!-- REDEEMS --><div id="redeems" class="section"><h2 style="margin-bottom:10px">طلبات شراء العملات</h2><div id="redeemList"></div></div></div></div><script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 getFirestore,
@@ -223,92 +187,39 @@ onSnapshot,
 doc,
 updateDoc,
 deleteDoc,
-increment,
-setDoc,
-getDoc,
-getDocs,
-query,
-where
+increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
-authDomain: "popo-da43c.firebaseapp.com",
-projectId: "popo-da43c",
-storageBucket: "popo-da43c.firebasestorage.app",
-messagingSenderId: "570136899084",
-appId: "1:570136899084:web:2a86be16b0ff2261c98829"
+apiKey:"AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+authDomain:"popo-da43c.firebaseapp.com",
+projectId:"popo-da43c"
 
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* حماية الأدمن */
+/* تغيير الأقسام */
 
-onAuthStateChanged(auth, async(user)=>{
+window.showSection=(id)=>{
 
-if(!user){
-location.href="login.html";
-return;
-}
+document.querySelectorAll(".section").forEach(s=>{
 
-const snap = await getDoc(doc(db,"users",user.uid));
+s.classList.remove("active")
 
-if(!snap.exists() || snap.data().isAdmin !== true){
-
-alert("هذا الحساب ليس أدمن");
-
-location.href="index.html";
-
-return;
-
-}
-
-loadStats();
-loadUsers();
-loadPrizes();
-loadRedeems();
-
-});
-
-/* تبديل الأقسام */
-
-window.showSection = (id)=>{
-
-document.querySelectorAll(".section").forEach(sec=>{
-sec.classList.remove("active")
 })
 
 document.getElementById(id).classList.add("active")
 
 }
 
-/* الإحصائيات */
-
-function loadStats(){
-
-onSnapshot(collection(db,"users"),snap=>{
-document.getElementById("statUsers").innerText=snap.size
-})
-
-onSnapshot(collection(db,"prizes"),snap=>{
-document.getElementById("statPrizes").innerText=snap.size
-})
-
-onSnapshot(collection(db,"redeemRequests"),snap=>{
-document.getElementById("statRedeems").innerText=snap.size
-})
-
-}
-
 /* USERS */
 
-function loadUsers(){
-
 onSnapshot(collection(db,"users"),snap=>{
+
+document.getElementById("statUsers").innerText=snap.size
 
 let html=""
 
@@ -316,43 +227,43 @@ snap.forEach(docSnap=>{
 
 const d=docSnap.data()
 
-const uid=docSnap.id
-
 html+=`
 
-<div class="card">
+<tr>
 
-<img src="${d.photo || 'https://i.imgur.com/6VBx3io.png'}" width="50">
+<td><img src="${d.photo||''}" width="40"></td>
 
-<h3>${d.name || "-"}</h3>
+<td>${d.name||''}</td>
 
-<p>💰 ${d.walletBalance || 0}</p>
+<td>${d.walletBalance||0}</td>
 
-<input id="points-${uid}" placeholder="عدد النقاط">
+<td>
 
-<button class="action blue" onclick="addPoints('${uid}')">
-إضافة نقاط
-</button>
+<input id="p-${docSnap.id}" style="width:60px">
 
-<button class="action red" onclick="removeUser('${uid}')">
-حذف
-</button>
+<button class="btn blue" onclick="addPoints('${docSnap.id}')">إضافة</button>
 
-</div>
+</td>
+
+<td>
+
+<button class="btn red" onclick="removeUser('${docSnap.id}')">حذف</button>
+
+</td>
+
+</tr>
 
 `
 
 })
 
-document.getElementById("users").innerHTML=html
+document.getElementById("usersTable").innerHTML=html
 
 })
 
-}
+window.addPoints=async(uid)=>{
 
-window.addPoints = async(uid)=>{
-
-const val=document.getElementById(`points-${uid}`).value
+const val=document.getElementById("p-"+uid).value
 
 if(!val)return
 
@@ -362,11 +273,11 @@ walletBalance:increment(Number(val))
 
 })
 
-alert("تم إضافة النقاط")
+alert("تمت إضافة النقاط")
 
 }
 
-window.removeUser = async(uid)=>{
+window.removeUser=async(uid)=>{
 
 if(confirm("حذف المستخدم؟")){
 
@@ -376,87 +287,12 @@ await deleteDoc(doc(db,"users",uid))
 
 }
 
-/* PRIZES */
-
-function loadPrizes(){
-
-onSnapshot(collection(db,"prizes"),snap=>{
-
-let html=""
-
-snap.forEach(docSnap=>{
-
-const d=docSnap.data()
-
-html+=`
-
-<div class="card">
-
-<img src="${d.image}" width="100%">
-
-<p>${d.currentPoints}/${d.targetPoints}</p>
-
-<p>${d.active ? "مفتوحة":"مغلقة"}</p>
-
-<button class="action red"
-onclick="deletePrize('${docSnap.id}')">
-
-حذف
-
-</button>
-
-</div>
-
-`
-
-})
-
-document.getElementById("prizes").innerHTML=html
-
-})
-
-}
-
-window.createPrize = async ()=>{
-
-const img=document.getElementById("newImage").value
-
-const target=document.getElementById("targetPoints").value
-
-await setDoc(doc(collection(db,"prizes")),{
-
-image:img,
-
-targetPoints:Number(target),
-
-currentPoints:0,
-
-active:true,
-
-winner:""
-
-})
-
-alert("تم إنشاء الجائزة")
-
-}
-
-window.deletePrize = async(id)=>{
-
-if(confirm("حذف الجائزة؟")){
-
-await deleteDoc(doc(db,"prizes",id))
-
-}
-
-}
-
 /* REDEEMS */
-
-function loadRedeems(){
 
 onSnapshot(collection(db,"redeemRequests"),snap=>{
 
+document.getElementById("statRedeems").innerText=snap.size
+
 let html=""
 
 snap.forEach(docSnap=>{
@@ -465,60 +301,23 @@ const d=docSnap.data()
 
 html+=`
 
-<div class="card">
+<div style="background:#1e293b;padding:10px;border-radius:8px;margin-bottom:8px">
 
-<h3>${d.userName}</h3>
+<b>${d.userName}</b>
 
 <p>ID: ${d.playerId}</p>
 
 <p>Status: ${d.status}</p>
 
-${
-d.status==="pending"
-?
-
-`<button class="action green"
-onclick="approveRedeem('${docSnap.id}','${d.userId}')">
-
-موافقة
-
-</button>`
-
-:""
-
-}
-
 </div>
 
 `
 
 })
 
-document.getElementById("redeems").innerHTML=html
+document.getElementById("redeemList").innerHTML=html
 
 })
 
-}
-
-window.approveRedeem = async(id,uid)=>{
-
-await updateDoc(doc(db,"redeemRequests",id),{
-
-status:"approved"
-
-})
-
-await updateDoc(doc(db,"users",uid),{
-
-totalRedeems:increment(1)
-
-})
-
-alert("تمت الموافقة")
-
-}
-
-</script>
-
-</body>
+</script></body>
 </html>
