@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MASOUDI ADMIN</title>
+<title>MASOUDI ADMIN SYSTEM</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -29,12 +29,13 @@ color:white;
 /* SIDEBAR */
 
 .sidebar{
-width:240px;
+width:250px;
 background:#020617;
 padding:20px;
 display:flex;
 flex-direction:column;
 gap:10px;
+overflow:auto;
 }
 
 .logo{
@@ -71,6 +72,8 @@ flex-direction:column;
 background:#020617;
 padding:15px;
 border-bottom:1px solid #1e293b;
+display:flex;
+justify-content:space-between;
 }
 
 .content{
@@ -137,17 +140,13 @@ color:white;
 .green{background:#16a34a}
 .orange{background:#ea580c}
 
-/* SEARCH */
+/* INPUT */
 
-.search{
-margin-bottom:10px;
-}
-
-.search input{
+input{
 padding:8px;
 border:none;
 border-radius:6px;
-width:250px;
+margin:5px;
 }
 
 </style>
@@ -161,10 +160,13 @@ width:250px;
 <div class="logo">MASOUDI</div>
 
 <button class="menuBtn" onclick="showSection('dashboard')">📊 Dashboard</button>
-<button class="menuBtn" onclick="showSection('usersSection')">👥 Users</button>
-<button class="menuBtn" onclick="showSection('prizesSection')">🎁 Prizes</button>
-<button class="menuBtn" onclick="showSection('redeemsSection')">💎 Redeems</button>
-<button class="menuBtn" onclick="showSection('winnersSection')">🏆 Winners</button>
+<button class="menuBtn" onclick="showSection('users')">👥 المستخدمين</button>
+<button class="menuBtn" onclick="showSection('redeems')">💎 الطلبات</button>
+<button class="menuBtn" onclick="showSection('winners')">🏆 الفائزين</button>
+<button class="menuBtn" onclick="showSection('ban')">🚫 إدارة الحظر</button>
+<button class="menuBtn" onclick="showSection('coins')">💰 إرسال نقاط</button>
+<button class="menuBtn" onclick="showSection('edit')">⚙ تعديل الحساب</button>
+<button class="menuBtn" onclick="showSection('logs')">🪙 سجل النقاط</button>
 
 </div>
 
@@ -197,11 +199,6 @@ width:250px;
 <h2 id="statRedeems">0</h2>
 </div>
 
-<div class="card">
-🏆 الفائزين
-<h2 id="statWinners">0</h2>
-</div>
-
 </div>
 
 <canvas id="chart"></canvas>
@@ -210,17 +207,16 @@ width:250px;
 
 <!-- USERS -->
 
-<div id="usersSection" class="section">
+<div id="users" class="section">
 
 <h2>المستخدمين</h2>
 
-<div class="search">
-<input id="searchUser" placeholder="بحث عن مستخدم">
-</div>
+<input id="searchUser" placeholder="بحث">
 
 <table>
 
 <thead>
+
 <tr>
 <th>ID</th>
 <th>الصورة</th>
@@ -232,6 +228,7 @@ width:250px;
 <th>فك الحظر</th>
 <th>حذف</th>
 </tr>
+
 </thead>
 
 <tbody id="usersTable"></tbody>
@@ -240,28 +237,85 @@ width:250px;
 
 </div>
 
-<!-- PRIZES -->
-
-<div id="prizesSection" class="section">
-<h2>الجوائز</h2>
-<div id="prizesList"></div>
-</div>
-
 <!-- REDEEMS -->
 
-<div id="redeemsSection" class="section">
-<h2>طلبات العملات</h2>
+<div id="redeems" class="section">
+
+<h2>طلبات الاستبدال</h2>
+
 <div id="redeemsList"></div>
+
 </div>
 
 <!-- WINNERS -->
 
-<div id="winnersSection" class="section">
+<div id="winners" class="section">
+
 <h2>الفائزين</h2>
+
 <div id="winnersList"></div>
+
+</div>
+
+<!-- BAN -->
+
+<div id="ban" class="section">
+
+<h2>إدارة الحظر</h2>
+
+<input id="banId" placeholder="ID المستخدم">
+
+<br>
+
+<button class="btn orange" onclick="banById()">حظر</button>
+<button class="btn green" onclick="unbanById()">فك الحظر</button>
+
+</div>
+
+<!-- SEND COINS -->
+
+<div id="coins" class="section">
+
+<h2>إرسال نقاط</h2>
+
+<input id="coinId" placeholder="ID المستخدم">
+<input id="coinAmount" placeholder="عدد النقاط">
+
+<br>
+
+<button class="btn blue" onclick="sendCoins()">إرسال</button>
+
+</div>
+
+<!-- EDIT USER -->
+
+<div id="edit" class="section">
+
+<h2>تعديل الحساب</h2>
+
+<input id="editId" placeholder="ID المستخدم">
+<input id="editName" placeholder="الاسم">
+<input id="editPhoto" placeholder="الصورة">
+<input id="editPoints" placeholder="النقاط">
+
+<br>
+
+<button class="btn green" onclick="editUser()">حفظ</button>
+
+</div>
+
+<!-- LOGS -->
+
+<div id="logs" class="section">
+
+<h2>سجل تحويل النقاط</h2>
+
+<div id="logsList"></div>
+
 </div>
 
 </div>
+
 </div>
 
 <script type="module">
@@ -278,24 +332,25 @@ doc,
 updateDoc,
 deleteDoc,
 increment,
-getDoc
+getDoc,
+addDoc
 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig={
-
 apiKey:"AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
 authDomain:"popo-da43c.firebaseapp.com",
 projectId:"popo-da43c",
 storageBucket:"popo-da43c.appspot.com",
 messagingSenderId:"570136899084",
 appId:"1:570136899084:web:2a86be16b0ff2261c98829"
-
 };
 
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
+
+/* ADMIN CHECK */
 
 onAuthStateChanged(auth,async(user)=>{
 
@@ -311,48 +366,21 @@ return;
 
 }
 
-loadStats();
 loadUsers();
+loadStats();
 loadRedeems();
-loadPrizes();
 loadWinners();
+loadLogs();
 
 });
 
 /* SWITCH */
 
 window.showSection=(id)=>{
+
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+
 document.getElementById(id).classList.add("active")
-}
-
-/* STATS */
-
-function loadStats(){
-
-onSnapshot(collection(db,"users"),s=>{
-statUsers.innerText=s.size
-})
-
-onSnapshot(collection(db,"prizes"),s=>{
-statPrizes.innerText=s.size
-})
-
-onSnapshot(collection(db,"redeemRequests"),s=>{
-statRedeems.innerText=s.size
-})
-
-onSnapshot(collection(db,"prizes"),snap=>{
-
-let winners=0
-
-snap.forEach(d=>{
-if(!d.data().active) winners++
-})
-
-statWinners.innerText=winners
-
-})
 
 }
 
@@ -369,7 +397,7 @@ snap.forEach(docSnap=>{
 const d=docSnap.data()
 const uid=docSnap.id
 
-const status=d.banned?"🚫 محظور":"✅ نشط"
+const status=d.banned?"🚫":"✅"
 
 html+=`
 
@@ -389,19 +417,19 @@ html+=`
 
 <td>
 <input id="p-${uid}" style="width:50px">
-<button class="btn blue" onclick="addPoints('${uid}')">+</button>
+<button onclick="addPoints('${uid}')">+</button>
 </td>
 
 <td>
-<button class="btn orange" onclick="banUser('${uid}')">🚫</button>
+<button onclick="banUser('${uid}')">🚫</button>
 </td>
 
 <td>
-<button class="btn green" onclick="unbanUser('${uid}')">✔</button>
+<button onclick="unbanUser('${uid}')">✅</button>
 </td>
 
 <td>
-<button class="btn red" onclick="removeUser('${uid}')">🗑</button>
+<button onclick="removeUser('${uid}')">🗑</button>
 </td>
 
 </tr>
@@ -426,6 +454,12 @@ if(!val)return
 
 await updateDoc(doc(db,"users",uid),{
 walletBalance:increment(Number(val))
+})
+
+await addDoc(collection(db,"coinLogs"),{
+userId:uid,
+amount:Number(val),
+time:new Date()
 })
 
 }
@@ -455,26 +489,59 @@ banned:false
 window.removeUser=async(uid)=>{
 
 if(confirm("حذف المستخدم؟")){
-
 await deleteDoc(doc(db,"users",uid))
-
 }
 
 }
 
-/* SEARCH */
+/* BAN BY ID */
 
-searchUser.addEventListener("input",()=>{
+window.banById=async()=>{
+const id=banId.value
+await updateDoc(doc(db,"users",id),{banned:true})
+}
 
-const val=searchUser.value.toLowerCase()
+/* UNBAN BY ID */
 
-document.querySelectorAll("#usersTable tr").forEach(row=>{
+window.unbanById=async()=>{
+const id=banId.value
+await updateDoc(doc(db,"users",id),{banned:false})
+}
 
-row.style.display=row.innerText.toLowerCase().includes(val)?"":"none"
+/* SEND COINS */
+
+window.sendCoins=async()=>{
+
+const id=coinId.value
+const amount=Number(coinAmount.value)
+
+await updateDoc(doc(db,"users",id),{
+walletBalance:increment(amount)
+})
+
+await addDoc(collection(db,"coinLogs"),{
+userId:id,
+amount:amount,
+time:new Date()
+})
+
+}
+
+/* EDIT USER */
+
+window.editUser=async()=>{
+
+const id=editId.value
+
+await updateDoc(doc(db,"users",id),{
+
+name:editName.value,
+photo:editPhoto.value,
+walletBalance:Number(editPoints.value)
 
 })
 
-})
+}
 
 /* REDEEMS */
 
@@ -504,16 +571,6 @@ redeemsList.innerHTML=html
 
 }
 
-/* PRIZES */
-
-function loadPrizes(){
-
-onSnapshot(collection(db,"prizes"),snap=>{
-prizesList.innerHTML="عدد الجوائز: "+snap.size
-})
-
-}
-
 /* WINNERS */
 
 function loadWinners(){
@@ -528,17 +585,47 @@ const d=docSnap.data()
 
 if(!d.active){
 
-html+=`
-<div class="card">
-🏆 ${d.winner}
-</div>
-`
+html+=`<div class="card">🏆 ${d.winner}</div>`
 
 }
 
 })
 
 winnersList.innerHTML=html
+
+})
+
+}
+
+/* LOGS */
+
+function loadLogs(){
+
+onSnapshot(collection(db,"coinLogs"),snap=>{
+
+let html=""
+
+snap.forEach(docSnap=>{
+
+const d=docSnap.data()
+
+html+=`
+
+<div class="card">
+
+المستخدم: ${d.userId}
+
+<br>
+
+النقاط: ${d.amount}
+
+</div>
+
+`
+
+})
+
+logsList.innerHTML=html
 
 })
 
