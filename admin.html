@@ -71,8 +71,6 @@ flex-direction:column;
 background:#020617;
 padding:15px;
 border-bottom:1px solid #1e293b;
-display:flex;
-justify-content:space-between;
 }
 
 .content{
@@ -105,7 +103,6 @@ background:#1e293b;
 padding:20px;
 border-radius:10px;
 text-align:center;
-font-size:18px;
 }
 
 /* TABLE */
@@ -174,9 +171,7 @@ width:250px;
 <div class="main">
 
 <div class="header">
-
 <h2>لوحة التحكم</h2>
-
 </div>
 
 <div class="content">
@@ -226,7 +221,6 @@ width:250px;
 <table>
 
 <thead>
-
 <tr>
 <th>ID</th>
 <th>الصورة</th>
@@ -235,9 +229,9 @@ width:250px;
 <th>الحالة</th>
 <th>إضافة</th>
 <th>حظر</th>
+<th>فك الحظر</th>
 <th>حذف</th>
 </tr>
-
 </thead>
 
 <tbody id="usersTable"></tbody>
@@ -268,7 +262,6 @@ width:250px;
 </div>
 
 </div>
-
 </div>
 
 <script type="module">
@@ -304,8 +297,6 @@ const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
 
-/* ADMIN CHECK */
-
 onAuthStateChanged(auth,async(user)=>{
 
 if(!user){location.href="login.html";return;}
@@ -315,9 +306,7 @@ const snap=await getDoc(doc(db,"users",user.uid));
 if(!snap.exists()||snap.data().isAdmin!==true){
 
 alert("ليس لديك صلاحية");
-
 location.href="index.html";
-
 return;
 
 }
@@ -333,11 +322,8 @@ loadWinners();
 /* SWITCH */
 
 window.showSection=(id)=>{
-
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
-
 document.getElementById(id).classList.add("active")
-
 }
 
 /* STATS */
@@ -383,7 +369,7 @@ snap.forEach(docSnap=>{
 const d=docSnap.data()
 const uid=docSnap.id
 
-const status=d.banned?"🚫":"✅"
+const status=d.banned?"🚫 محظور":"✅ نشط"
 
 html+=`
 
@@ -408,6 +394,10 @@ html+=`
 
 <td>
 <button class="btn orange" onclick="banUser('${uid}')">🚫</button>
+</td>
+
+<td>
+<button class="btn green" onclick="unbanUser('${uid}')">✔</button>
 </td>
 
 <td>
@@ -450,6 +440,16 @@ banned:true
 
 }
 
+/* UNBAN */
+
+window.unbanUser=async(uid)=>{
+
+await updateDoc(doc(db,"users",uid),{
+banned:false
+})
+
+}
+
 /* DELETE */
 
 window.removeUser=async(uid)=>{
@@ -461,6 +461,20 @@ await deleteDoc(doc(db,"users",uid))
 }
 
 }
+
+/* SEARCH */
+
+searchUser.addEventListener("input",()=>{
+
+const val=searchUser.value.toLowerCase()
+
+document.querySelectorAll("#usersTable tr").forEach(row=>{
+
+row.style.display=row.innerText.toLowerCase().includes(val)?"":"none"
+
+})
+
+})
 
 /* REDEEMS */
 
