@@ -248,6 +248,7 @@ border-radius:6px;
 <thead>
 
 <tr>
+<th>ID</th>
 <th>الصورة</th>
 <th>الاسم</th>
 <th>النقاط</th>
@@ -411,17 +412,17 @@ const d=docSnap.data()
 
 html+=`
 
+html+=`
+
 <tr>
 
-<td>
-<img src="${d.photo||'https://i.imgur.com/6VBx3io.png'}" width="40">
-</td>
+<td style="font-size:12px">${docSnap.id}</td>
+
+<td><img src="${d.photo||'https://i.imgur.com/6VBx3io.png'}" width="40"></td>
 
 <td>${d.name||"-"}</td>
 
 <td>${d.walletBalance||0}</td>
-
-<td>
 
 <input id="p-${docSnap.id}" style="width:60px">
 
