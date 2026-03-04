@@ -176,27 +176,20 @@ border-radius:6px;
 </style>
 
 </head>
+
 <body>
 
 <div class="sidebar">
 
 <div class="logo">MASOUDI</div>
 
-<button class="menuBtn" onclick="showSection('dashboard')">
-📊 Dashboard
-</button>
+<button class="menuBtn" onclick="showSection('dashboard')">📊 Dashboard</button>
 
-<button class="menuBtn" onclick="showSection('usersSection')">
-👥 المستخدمين
-</button>
+<button class="menuBtn" onclick="showSection('usersSection')">👥 المستخدمين</button>
 
-<button class="menuBtn" onclick="showSection('prizesSection')">
-🎁 الجوائز
-</button>
+<button class="menuBtn" onclick="showSection('prizesSection')">🎁 الجوائز</button>
 
-<button class="menuBtn" onclick="showSection('redeemsSection')">
-💎 طلبات العملات
-</button>
+<button class="menuBtn" onclick="showSection('redeemsSection')">💎 طلبات العملات</button>
 
 </div>
 
@@ -207,8 +200,6 @@ border-radius:6px;
 </div>
 
 <div class="content">
-
-<!-- DASHBOARD -->
 
 <div id="dashboard" class="section active">
 
@@ -233,8 +224,6 @@ border-radius:6px;
 
 </div>
 
-<!-- USERS -->
-
 <div id="usersSection" class="section">
 
 <h2>المستخدمين</h2>
@@ -246,7 +235,7 @@ border-radius:6px;
 <table>
 
 <thead>
-
+<tr>
 <th>ID</th>
 <th>نسخ</th>
 <th>الصورة</th>
@@ -258,6 +247,7 @@ border-radius:6px;
 <th>إضافة نقاط</th>
 <th>الإعدادات</th>
 <th>حذف</th>
+</tr>
 </thead>
 
 <tbody id="usersTable"></tbody>
@@ -266,14 +256,10 @@ border-radius:6px;
 
 </div>
 
-<!-- PRIZES -->
-
 <div id="prizesSection" class="section">
 <h2>الجوائز</h2>
 <div id="prizesList"></div>
 </div>
-
-<!-- REDEEMS -->
 
 <div id="redeemsSection" class="section">
 <h2>طلبات العملات</h2>
@@ -282,8 +268,6 @@ border-radius:6px;
 
 </div>
 </div>
-
-<!-- SETTINGS -->
 
 <div id="userSettings">
 
@@ -311,11 +295,8 @@ border-radius:6px;
 
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import { getAuth,onAuthStateChanged }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 getFirestore,
@@ -325,7 +306,10 @@ doc,
 updateDoc,
 deleteDoc,
 increment,
-getDoc
+getDoc,
+getDocs,
+query,
+where
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -344,8 +328,6 @@ const db=getFirestore(app);
 
 let selectedUser=null;
 
-/* ADMIN CHECK */
-
 onAuthStateChanged(auth,async(user)=>{
 
 if(!user){location.href="login.html";return;}
@@ -353,13 +335,9 @@ if(!user){location.href="login.html";return;}
 const snap=await getDoc(doc(db,"users",user.uid));
 
 if(!snap.exists()||snap.data().isAdmin!==true){
-
 alert("ليس لديك صلاحية");
-
 location.href="index.html";
-
 return;
-
 }
 
 loadStats();
@@ -369,37 +347,26 @@ loadRedeems();
 
 });
 
-/* SWITCH */
-
 window.showSection=(id)=>{
-
-document.querySelectorAll(".section")
-.forEach(s=>s.classList.remove("active"))
-
-document.getElementById(id)
-.classList.add("active")
-
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+document.getElementById(id).classList.add("active")
 }
-
-/* STATS */
 
 function loadStats(){
 
 onSnapshot(collection(db,"users"),s=>{
-statUsers.innerText=s.size
+document.getElementById("statUsers").innerText=s.size
 })
 
 onSnapshot(collection(db,"prizes"),s=>{
-statPrizes.innerText=s.size
+document.getElementById("statPrizes").innerText=s.size
 })
 
 onSnapshot(collection(db,"redeemRequests"),s=>{
-statRedeems.innerText=s.size
+document.getElementById("statRedeems").innerText=s.size
 })
 
 }
-
-/* USERS */
 
 function loadUsers(){
 
@@ -409,36 +376,22 @@ let html="";
 
 for(const docSnap of snap.docs){
 
-const d = docSnap.data();
-const uid = docSnap.id;
+const d=docSnap.data()
+const uid=docSnap.id
 
-/* حساب المشاركات */
+const partSnap=await getDocs(query(collection(db,"prizeParticipants"),where("userId","==",uid)))
+const winSnap=await getDocs(query(collection(db,"prizes"),where("winner","==",(d.name||""))))
 
-const partSnap = await getDocs(
-query(collection(db,"prizeParticipants"),
-where("userId","==",uid))
-);
+const status=d.banned?"🚫 محظور":"✅ نشط"
 
-/* حساب مرات الفوز */
-
-const winSnap = await getDocs(
-query(collection(db,"prizes"),
-where("winner","==",(d.name||"")))
-);
-
-const status = d.banned ? "🚫 محظور" : "✅ نشط";
-
-html += `
+html+=`
 
 <tr>
 
 <td style="font-size:11px">${uid}</td>
 
 <td>
-<button class="btn blue"
-onclick="copyID('${uid}')">
-📋
-</button>
+<button class="btn blue" onclick="copyID('${uid}')">📋</button>
 </td>
 
 <td>
@@ -456,201 +409,100 @@ onclick="copyID('${uid}')">
 <td>${status}</td>
 
 <td>
-
 <input id="p-${uid}" style="width:60px">
-
-<button class="btn blue"
-onclick="addPoints('${uid}')">
-+
-</button>
-
+<button class="btn blue" onclick="addPoints('${uid}')">+</button>
 </td>
 
 <td>
-
-<button class="btn green"
-onclick="openSettings('${uid}','${d.name}','${d.photo}',${d.walletBalance||0})">
-⚙
-</button>
-
+<button class="btn green" onclick="openSettings('${uid}','${d.name}','${d.photo}',${d.walletBalance||0})">⚙</button>
 </td>
 
 <td>
-
-<button class="btn red"
-onclick="removeUser('${uid}')">
-حذف
-</button>
-
+<button class="btn red" onclick="removeUser('${uid}')">حذف</button>
 </td>
 
 </tr>
-
-`;
-
-}
-
-usersTable.innerHTML = html;
-
-});
+`
 
 }
 
-/* ADD POINTS */
+document.getElementById("usersTable").innerHTML=html
 
-window.addPoints=async(uid)=>{
-
-const val=document.getElementById("p-"+uid).value
-
-if(!val)return
-
-await updateDoc(doc(db,"users",uid),{
-walletBalance:increment(Number(val))
 })
 
-alert("تم إضافة النقاط")
-
 }
 
-/* SETTINGS */
+window.copyID=function(id){
+navigator.clipboard.writeText(id)
+alert("تم نسخ ID المستخدم")
+}
+
+window.addPoints=async(uid)=>{
+const val=document.getElementById("p-"+uid).value
+if(!val)return
+await updateDoc(doc(db,"users",uid),{walletBalance:increment(Number(val))})
+alert("تم إضافة النقاط")
+}
 
 window.openSettings=(uid,name,photo,points)=>{
-
 selectedUser=uid
-
 editName.value=name||""
 editPhoto.value=photo||""
 editPoints.value=points||0
-
 userSettings.style.display="flex"
-
 }
 
-window.closeSettings=()=>{
-userSettings.style.display="none"
-}
+window.closeSettings=()=>{userSettings.style.display="none"}
 
 window.saveUser=async()=>{
-
-const name=editName.value
-const photo=editPhoto.value
-const points=Number(editPoints.value)
-
-const userRef=doc(db,"users",selectedUser)
-
-let updateData={
-name:name,
-walletBalance:points
-}
-
-if(photo && photo.trim()!==""){
-updateData.photo=photo
-}
-
-await updateDoc(userRef,updateData)
-
+await updateDoc(doc(db,"users",selectedUser),{
+name:editName.value,
+photo:editPhoto.value,
+walletBalance:Number(editPoints.value)
+})
 alert("تم التحديث")
-
 }
-
-/* BAN */
 
 window.banUser=async()=>{
-
-await updateDoc(doc(db,"users",selectedUser),{
-banned:true
-})
-
+await updateDoc(doc(db,"users",selectedUser),{banned:true})
 alert("تم الحظر")
-
 }
 
 window.unbanUser=async()=>{
-
-await updateDoc(doc(db,"users",selectedUser),{
-banned:false
-})
-
+await updateDoc(doc(db,"users",selectedUser),{banned:false})
 alert("تم فك الحظر")
-
 }
-
-/* DELETE */
 
 window.removeUser=async(uid)=>{
-
 if(confirm("حذف المستخدم؟")){
-
 await deleteDoc(doc(db,"users",uid))
-
 }
-
 }
-
-/* PRIZES */
 
 function loadPrizes(){
-
 onSnapshot(collection(db,"prizes"),snap=>{
-prizesList.innerHTML="عدد الجوائز: "+snap.size
+document.getElementById("prizesList").innerHTML="عدد الجوائز: "+snap.size
 })
-
 }
-
-/* REDEEMS */
 
 function loadRedeems(){
-
 onSnapshot(collection(db,"redeemRequests"),snap=>{
-
 let html=""
-
 snap.forEach(docSnap=>{
-
 const d=docSnap.data()
-
-html+=`
-
-<div class="card">
-
-<b>${d.userName}</b>
-
-<p>ID: ${d.playerId}</p>
-
-<p>Status: ${d.status}</p>
-
-</div>
-
-`
-
+html+=`<div class="card"><b>${d.userName}</b><p>ID: ${d.playerId}</p><p>Status: ${d.status}</p></div>`
 })
-
-redeemsList.innerHTML=html
-
+document.getElementById("redeemsList").innerHTML=html
 })
-
 }
-
-/* SEARCH */
 
 searchUser.addEventListener("input",()=>{
-
 const val=searchUser.value.toLowerCase()
-
 document.querySelectorAll("#usersTable tr").forEach(row=>{
-
 row.style.display=row.innerText.toLowerCase().includes(val)?"":"none"
-
+})
 })
 
-})
-window.copyID = function(id){
-
-navigator.clipboard.writeText(id);
-
-alert("تم نسخ ID المستخدم");
-
-}
 </script>
 
 </body>
