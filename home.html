@@ -831,6 +831,20 @@ if(!snap.exists()) return;
 
 const data = snap.data();
 
+/* فحص الحظر */
+
+if(data.banned === true){
+
+alert("تم حظر حسابك من الموقع");
+
+logout();
+
+return;
+
+}
+
+/* تحديث البيانات */
+
 document.getElementById("userName").innerText =
 data.name || "مستخدم";
 
