@@ -1,5 +1,13 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MASOUDI Admin</title><style>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MASOUDI ADMIN</title>
+
+<style>
 
 *{
 margin:0;
@@ -18,7 +26,7 @@ color:white;
 /* SIDEBAR */
 
 .sidebar{
-width:230px;
+width:240px;
 background:#020617;
 padding:20px;
 display:flex;
@@ -67,6 +75,8 @@ overflow:auto;
 flex:1;
 }
 
+/* SECTIONS */
+
 .section{
 display:none;
 }
@@ -80,14 +90,28 @@ display:block;
 .cards{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:10px;
+gap:15px;
 margin-bottom:20px;
 }
 
 .card{
 background:#1e293b;
-padding:15px;
+padding:20px;
 border-radius:10px;
+text-align:center;
+}
+
+/* SEARCH */
+
+.search{
+margin-bottom:10px;
+}
+
+.search input{
+width:250px;
+padding:8px;
+border:none;
+border-radius:6px;
 }
 
 /* TABLE */
@@ -107,7 +131,7 @@ th{
 background:#020617;
 }
 
-/* BUTTON */
+/* BUTTONS */
 
 .btn{
 padding:6px 10px;
@@ -122,17 +146,7 @@ color:white;
 .green{background:#16a34a}
 .orange{background:#ea580c}
 
-input{
-padding:5px;
-border-radius:5px;
-border:none;
-}
-
-img{
-border-radius:6px;
-}
-
-/* SETTINGS POPUP */
+/* SETTINGS */
 
 #userSettings{
 display:none;
@@ -153,43 +167,153 @@ flex-direction:column;
 gap:10px;
 }
 
-</style></head><body><div class="sidebar"><div class="logo">MASOUDI</div><button class="menuBtn" onclick="showSection('dashboard')">📊 Dashboard</button>
-<button class="menuBtn" onclick="showSection('usersSection')">👥 المستخدمين</button>
-<button class="menuBtn" onclick="showSection('prizesSection')">🎁 الجوائز</button>
-<button class="menuBtn" onclick="showSection('redeemsSection')">💎 طلبات العملات</button>
+.settingsBox input{
+padding:8px;
+border:none;
+border-radius:6px;
+}
 
-</div><div class="main"><div class="header">
+</style>
+
+</head>
+<body>
+
+<div class="sidebar">
+
+<div class="logo">MASOUDI</div>
+
+<button class="menuBtn" onclick="showSection('dashboard')">
+📊 Dashboard
+</button>
+
+<button class="menuBtn" onclick="showSection('usersSection')">
+👥 المستخدمين
+</button>
+
+<button class="menuBtn" onclick="showSection('prizesSection')">
+🎁 الجوائز
+</button>
+
+<button class="menuBtn" onclick="showSection('redeemsSection')">
+💎 طلبات العملات
+</button>
+
+</div>
+
+<div class="main">
+
+<div class="header">
 <h2>لوحة التحكم</h2>
-</div><div class="content"><!-- DASHBOARD --><div id="dashboard" class="section active"><div class="cards"><div class="card">
+</div>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="section active">
+
+<div class="cards">
+
+<div class="card">
 <h2 id="statUsers">0</h2>
 <p>المستخدمين</p>
-</div><div class="card">
+</div>
+
+<div class="card">
 <h2 id="statPrizes">0</h2>
 <p>الجوائز</p>
-</div><div class="card">
+</div>
+
+<div class="card">
 <h2 id="statRedeems">0</h2>
 <p>طلبات العملات</p>
-</div></div></div><!-- USERS --><div id="usersSection" class="section"><h2>المستخدمين</h2><table><thead>
+</div>
+
+</div>
+
+</div>
+
+<!-- USERS -->
+
+<div id="usersSection" class="section">
+
+<h2>المستخدمين</h2>
+
+<div class="search">
+<input id="searchUser" placeholder="بحث عن مستخدم">
+</div>
+
+<table>
+
+<thead>
+
 <tr>
 <th>الصورة</th>
 <th>الاسم</th>
 <th>النقاط</th>
 <th>إضافة نقاط</th>
-<th>إعدادات</th>
+<th>الإعدادات</th>
 <th>حذف</th>
 </tr>
-</thead><tbody id="usersTable"></tbody></table></div><!-- PRIZES --><div id="prizesSection" class="section"><h2>الجوائز</h2><div id="prizesList"></div></div><!-- REDEEMS --><div id="redeemsSection" class="section"><h2>طلبات شراء العملات</h2><div id="redeemsList"></div></div></div></div><!-- SETTINGS POPUP --><div id="userSettings"><div class="settingsBox"><h3>إعدادات المستخدم</h3><input id="editName" placeholder="اسم المستخدم">
+
+</thead>
+
+<tbody id="usersTable"></tbody>
+
+</table>
+
+</div>
+
+<!-- PRIZES -->
+
+<div id="prizesSection" class="section">
+<h2>الجوائز</h2>
+<div id="prizesList"></div>
+</div>
+
+<!-- REDEEMS -->
+
+<div id="redeemsSection" class="section">
+<h2>طلبات العملات</h2>
+<div id="redeemsList"></div>
+</div>
+
+</div>
+</div>
+
+<!-- SETTINGS -->
+
+<div id="userSettings">
+
+<div class="settingsBox">
+
+<h3>إعدادات المستخدم</h3>
+
+<input id="editName" placeholder="اسم المستخدم">
+
 <input id="editPhoto" placeholder="رابط الصورة">
-<input id="editPoints" placeholder="النقاط"><button class="btn green" onclick="saveUser()">حفظ التعديلات</button>
-<button class="btn orange" onclick="banUser()">حظر الحساب</button>
+
+<input id="editPoints" placeholder="النقاط">
+
+<button class="btn green" onclick="saveUser()">حفظ</button>
+
+<button class="btn orange" onclick="banUser()">حظر</button>
+
 <button class="btn blue" onclick="unbanUser()">فك الحظر</button>
+
 <button class="btn red" onclick="closeSettings()">إغلاق</button>
 
-</div></div><script type="module">
+</div>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+</div>
 
-import { getAuth,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { getAuth,onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 getFirestore,
@@ -203,7 +327,7 @@ getDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
+const firebaseConfig={
 apiKey:"AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
 authDomain:"popo-da43c.firebaseapp.com",
 projectId:"popo-da43c",
@@ -212,9 +336,9 @@ messagingSenderId:"570136899084",
 appId:"1:570136899084:web:2a86be16b0ff2261c98829"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
 
 let selectedUser=null;
 
@@ -226,7 +350,7 @@ if(!user){location.href="login.html";return;}
 
 const snap=await getDoc(doc(db,"users",user.uid));
 
-if(!snap.exists() || snap.data().isAdmin!==true){
+if(!snap.exists()||snap.data().isAdmin!==true){
 
 alert("ليس لديك صلاحية");
 
@@ -246,8 +370,13 @@ loadRedeems();
 /* SWITCH */
 
 window.showSection=(id)=>{
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
-document.getElementById(id).classList.add("active")
+
+document.querySelectorAll(".section")
+.forEach(s=>s.classList.remove("active"))
+
+document.getElementById(id)
+.classList.add("active")
+
 }
 
 /* STATS */
@@ -284,7 +413,9 @@ html+=`
 
 <tr>
 
-<td><img src="${d.photo||'https://i.imgur.com/6VBx3io.png'}" width="40"></td>
+<td>
+<img src="${d.photo||'https://i.imgur.com/6VBx3io.png'}" width="40">
+</td>
 
 <td>${d.name||"-"}</td>
 
@@ -294,19 +425,31 @@ html+=`
 
 <input id="p-${docSnap.id}" style="width:60px">
 
-<button class="btn blue" onclick="addPoints('${docSnap.id}')">+</button>
+<button class="btn blue" onclick="addPoints('${docSnap.id}')">
++
+</button>
 
 </td>
 
 <td>
 
-<button class="btn green" onclick="openSettings('${docSnap.id}','${d.name}','${d.photo}',${d.walletBalance||0})">⚙</button>
+<button class="btn green"
+onclick="openSettings('${docSnap.id}','${d.name}','${d.photo}',${d.walletBalance||0})">
+
+⚙
+
+</button>
 
 </td>
 
 <td>
 
-<button class="btn red" onclick="removeUser('${docSnap.id}')">حذف</button>
+<button class="btn red"
+onclick="removeUser('${docSnap.id}')">
+
+حذف
+
+</button>
 
 </td>
 
@@ -322,9 +465,12 @@ usersTable.innerHTML=html
 
 }
 
+/* ADD POINTS */
+
 window.addPoints=async(uid)=>{
 
 const val=document.getElementById("p-"+uid).value
+
 if(!val)return
 
 await updateDoc(doc(db,"users",uid),{
@@ -353,21 +499,21 @@ window.closeSettings=()=>{
 userSettings.style.display="none"
 }
 
-window.saveUser = async()=>{
+window.saveUser=async()=>{
 
-const name = editName.value
-const photo = editPhoto.value
-const points = Number(editPoints.value)
+const name=editName.value
+const photo=editPhoto.value
+const points=Number(editPoints.value)
 
-const userRef = doc(db,"users",selectedUser)
+const userRef=doc(db,"users",selectedUser)
 
-let updateData = {
+let updateData={
 name:name,
 walletBalance:points
 }
 
-if(photo && photo.trim() !== ""){
-updateData.photo = photo
+if(photo && photo.trim()!==""){
+updateData.photo=photo
 }
 
 await updateDoc(userRef,updateData)
@@ -384,7 +530,7 @@ await updateDoc(doc(db,"users",selectedUser),{
 banned:true
 })
 
-alert("تم حظر المستخدم")
+alert("تم الحظر")
 
 }
 
@@ -398,10 +544,14 @@ alert("تم فك الحظر")
 
 }
 
+/* DELETE */
+
 window.removeUser=async(uid)=>{
 
 if(confirm("حذف المستخدم؟")){
+
 await deleteDoc(doc(db,"users",uid))
+
 }
 
 }
@@ -425,15 +575,23 @@ onSnapshot(collection(db,"redeemRequests"),snap=>{
 let html=""
 
 snap.forEach(docSnap=>{
+
 const d=docSnap.data()
 
 html+=`
+
 <div class="card">
+
 <b>${d.userName}</b>
+
 <p>ID: ${d.playerId}</p>
+
 <p>Status: ${d.status}</p>
+
 </div>
+
 `
+
 })
 
 redeemsList.innerHTML=html
@@ -442,5 +600,21 @@ redeemsList.innerHTML=html
 
 }
 
-</script></body>
+/* SEARCH */
+
+searchUser.addEventListener("input",()=>{
+
+const val=searchUser.value.toLowerCase()
+
+document.querySelectorAll("#usersTable tr").forEach(row=>{
+
+row.style.display=row.innerText.toLowerCase().includes(val)?"":"none"
+
+})
+
+})
+
+</script>
+
+</body>
 </html>
