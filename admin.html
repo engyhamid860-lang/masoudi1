@@ -247,16 +247,17 @@ border-radius:6px;
 
 <thead>
 
-<tr>
 <th>ID</th>
+<th>نسخ</th>
 <th>الصورة</th>
 <th>الاسم</th>
 <th>النقاط</th>
+<th>المشاركات</th>
+<th>الفوز</th>
+<th>الحالة</th>
 <th>إضافة نقاط</th>
 <th>الإعدادات</th>
 <th>حذف</th>
-</tr>
-
 </thead>
 
 <tbody id="usersTable"></tbody>
@@ -402,29 +403,64 @@ statRedeems.innerText=s.size
 
 function loadUsers(){
 
-onSnapshot(collection(db,"users"),snap=>{
+onSnapshot(collection(db,"users"), async snap=>{
 
-let html=""
+let html="";
 
-snap.forEach(docSnap=>{
+for(const docSnap of snap.docs){
 
-const d=docSnap.data()
+const d = docSnap.data();
+const uid = docSnap.id;
 
-html+=`
+/* حساب المشاركات */
+
+const partSnap = await getDocs(
+query(collection(db,"prizeParticipants"),
+where("userId","==",uid))
+);
+
+/* حساب مرات الفوز */
+
+const winSnap = await getDocs(
+query(collection(db,"prizes"),
+where("winner","==",(d.name||"")))
+);
+
+const status = d.banned ? "🚫 محظور" : "✅ نشط";
+
+html += `
 
 <tr>
 
-<td style="font-size:12px">${docSnap.id}</td>
+<td style="font-size:11px">${uid}</td>
 
-<td><img src="${d.photo||'https://i.imgur.com/6VBx3io.png'}" width="40"></td>
+<td>
+<button class="btn blue"
+onclick="copyID('${uid}')">
+📋
+</button>
+</td>
+
+<td>
+<img src="${d.photo||'https://i.imgur.com/6VBx3io.png'}" width="40">
+</td>
 
 <td>${d.name||"-"}</td>
 
 <td>${d.walletBalance||0}</td>
 
-<input id="p-${docSnap.id}" style="width:60px">
+<td>${partSnap.size}</td>
 
-<button class="btn blue" onclick="addPoints('${docSnap.id}')">
+<td>${winSnap.size}</td>
+
+<td>${status}</td>
+
+<td>
+
+<input id="p-${uid}" style="width:60px">
+
+<button class="btn blue"
+onclick="addPoints('${uid}')">
 +
 </button>
 
@@ -433,10 +469,8 @@ html+=`
 <td>
 
 <button class="btn green"
-onclick="openSettings('${docSnap.id}','${d.name}','${d.photo}',${d.walletBalance||0})">
-
+onclick="openSettings('${uid}','${d.name}','${d.photo}',${d.walletBalance||0})">
 ⚙
-
 </button>
 
 </td>
@@ -444,23 +478,21 @@ onclick="openSettings('${docSnap.id}','${d.name}','${d.photo}',${d.walletBalance
 <td>
 
 <button class="btn red"
-onclick="removeUser('${docSnap.id}')">
-
+onclick="removeUser('${uid}')">
 حذف
-
 </button>
 
 </td>
 
 </tr>
 
-`
+`;
 
-})
+}
 
-usersTable.innerHTML=html
+usersTable.innerHTML = html;
 
-})
+});
 
 }
 
@@ -612,7 +644,13 @@ row.style.display=row.innerText.toLowerCase().includes(val)?"":"none"
 })
 
 })
+window.copyID = function(id){
 
+navigator.clipboard.writeText(id);
+
+alert("تم نسخ ID المستخدم");
+
+}
 </script>
 
 </body>
