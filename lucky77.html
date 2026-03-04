@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Lucky77 Game</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#1e1b4b,#020617);
+color:white;
+text-align:center;
+}
+
+/* TITLE */
+
+h1{
+margin-top:20px;
+}
+
+/* WHEEL */
+
+.wheelBox{
+margin-top:30px;
+position:relative;
+}
+
+#wheel{
+
+width:300px;
+height:300px;
+border-radius:50%;
+border:10px solid gold;
+transition:transform 4s cubic-bezier(.17,.67,.33,1.34);
+}
+
+/* POINTER */
+
+.pointer{
+
+width:0;
+height:0;
+border-left:15px solid transparent;
+border-right:15px solid transparent;
+border-bottom:30px solid red;
+margin:auto;
+}
+
+/* BUTTON */
+
+.spinBtn{
+
+margin-top:20px;
+padding:12px 30px;
+font-size:20px;
+border:none;
+background:#f7b500;
+border-radius:10px;
+cursor:pointer;
+
+}
+
+/* BET */
+
+.betBox{
+
+margin-top:20px;
+
+}
+
+.betBtn{
+
+padding:10px 20px;
+margin:5px;
+border:none;
+background:#2563eb;
+color:white;
+border-radius:8px;
+cursor:pointer;
+
+}
+
+/* RESULT */
+
+.result{
+
+font-size:24px;
+margin-top:20px;
+
+}
+
+.balance{
+
+margin-top:10px;
+font-size:18px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🎡 Lucky 77</h1>
+
+<div class="balance">
+الرصيد: <span id="balance">0</span>
+</div>
+
+<div class="pointer"></div>
+
+<div class="wheelBox">
+
+<canvas id="wheel" width="300" height="300"></canvas>
+
+</div>
+
+<div class="betBox">
+
+<p>اختر الرهان</p>
+
+<button class="betBtn" onclick="setBet(100)">100</button>
+<button class="betBtn" onclick="setBet(500)">500</button>
+<button class="betBtn" onclick="setBet(1000)">1K</button>
+<button class="betBtn" onclick="setBet(5000)">5K</button>
+
+</div>
+
+<button class="spinBtn" onclick="spin()">SPIN</button>
+
+<div class="result">
+النتيجة: <span id="result">-</span>
+</div>
+
+<script type="module">
+
+/* FIREBASE */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { getAuth,onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getFirestore,
+doc,
+updateDoc,
+getDoc,
+increment
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* CONFIG */
+
+const firebaseConfig={
+
+apiKey:"AIzaSyDhxOBatW40tfzP2nZVhSjJI55NeY4Nf_o",
+authDomain:"popo-da43c.firebaseapp.com",
+projectId:"popo-da43c",
+storageBucket:"popo-da43c.appspot.com",
+messagingSenderId:"570136899084",
+appId:"1:570136899084:web:2a86be16b0ff2261c98829"
+
+};
+
+const app=initializeApp(firebaseConfig);
+
+const auth=getAuth(app);
+
+const db=getFirestore(app);
+
+let currentUser=null;
+
+let balance=0;
+
+/* AUTH */
+
+onAuthStateChanged(auth,async(user)=>{
+
+if(!user){
+
+location.href="login.html";
+return;
+
+}
+
+currentUser=user;
+
+const snap=await getDoc(doc(db,"users",user.uid));
+
+balance=snap.data().walletBalance||0;
+
+document.getElementById("balance").innerText=balance;
+
+});
+
+/* WHEEL */
+
+const canvas=document.getElementById("wheel");
+
+const ctx=canvas.getContext("2d");
+
+const items=[
+"🍉",
+"🍇",
+"🍉",
+"🍇",
+"77",
+"🍉",
+"🍇",
+"🍉"
+];
+
+function drawWheel(){
+
+const size=items.length;
+
+const arc=2*Math.PI/size;
+
+for(let i=0;i<size;i++){
+
+ctx.beginPath();
+
+ctx.fillStyle=i%2?"#6b21a8":"#2563eb";
+
+ctx.moveTo(150,150);
+
+ctx.arc(150,150,150,i*arc,(i+1)*arc);
+
+ctx.fill();
+
+ctx.fillStyle="white";
+
+ctx.font="20px Arial";
+
+const angle=i*arc+arc/2;
+
+ctx.save();
+
+ctx.translate(150,150);
+
+ctx.rotate(angle);
+
+ctx.fillText(items[i],80,0);
+
+ctx.restore();
+
+}
+
+}
+
+drawWheel();
+
+/* BET */
+
+let bet=100;
+
+window.setBet=function(v){
+
+bet=v;
+
+}
+
+/* SPIN */
+
+window.spin=async function(){
+
+if(balance<bet){
+
+alert("الرصيد غير كافي");
+
+return;
+
+}
+
+/* خصم الرهان */
+
+await updateDoc(doc(db,"users",currentUser.uid),{
+
+walletBalance:increment(-bet)
+
+});
+
+balance-=bet;
+
+document.getElementById("balance").innerText=balance;
+
+/* دوران */
+
+const wheel=document.getElementById("wheel");
+
+let spinDeg=Math.random()*2000+2000;
+
+wheel.style.transform=`rotate(${spinDeg}deg)`;
+
+/* النتيجة */
+
+setTimeout(async()=>{
+
+let resultIndex=Math.floor(Math.random()*items.length);
+
+let result=items[resultIndex];
+
+document.getElementById("result").innerText=result;
+
+/* المكافأة */
+
+let reward=0;
+
+if(result==="77") reward=bet*8;
+
+if(result==="🍉") reward=bet*2;
+
+if(result==="🍇") reward=bet*2;
+
+if(reward>0){
+
+await updateDoc(doc(db,"users",currentUser.uid),{
+
+walletBalance:increment(reward)
+
+});
+
+balance+=reward;
+
+document.getElementById("balance").innerText=balance;
+
+}
+
+},4000);
+
+}
+
+</script>
+
+</body>
+</html>
