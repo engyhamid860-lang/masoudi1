@@ -686,28 +686,6 @@ border-bottom-right-radius:80px 40px;
 .admin-alert{
   animation:shake 1s infinite;
 }
-.game-icon{
-text-align:center;
-margin-top:20px;
-}
-
-.game-icon a{
-text-decoration:none;
-color:white;
-}
-
-.game-img{
-width:90px;
-height:90px;
-border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,0.5);
-}
-
-.game-icon p{
-margin-top:10px;
-font-size:18px;
-font-weight:bold;
-}
 </style>  </head>  
 <body>  
 <div class="header">
@@ -767,18 +745,6 @@ font-weight:bold;
 </div>
 💰 رصيدك: <span id="walletBalance">0</span> نقطة  
 </div> 
-<div class="game-icon">
-
-<a href="https://game2-ten-mu.vercel.app/" target="_blank">
-
-<img src="wheel.png" class="game-img">
-
-<p>عجلة الحظ</p>
-
-</a>
-
-</div>
-
 
  <div id="prizesContainer"></div> <button id="adminBtn"
  
@@ -1717,6 +1683,7 @@ z-index:999999;">
 </div>
 
 <div class="navbar">
+
   <button class="nav-btn active" onclick="goPage('index.html', this)">
     🏠 <span>الرئيسية</span>
   </button>
@@ -1725,8 +1692,13 @@ z-index:999999;">
     💰 <span>المحفظة</span>
   </button>
 
+  <button class="nav-btn" onclick="goPage('games.html', this)">
+    🎮 <span>الألعاب</span>
+  </button>
+
   <button class="nav-btn" onclick="logout()">
     🚪 <span>خروج</span>
   </button>
-</div> </body>  
+
+</div></body>  
 </html>  
