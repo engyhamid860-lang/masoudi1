@@ -686,20 +686,27 @@ border-bottom-right-radius:80px 40px;
 .admin-alert{
   animation:shake 1s infinite;
 }
-.game-container{
-width:100%;
-display:flex;
-justify-content:center;
+.game-icon{
+text-align:center;
 margin-top:20px;
 }
 
-.game-frame{
-width:100%;
-max-width:420px;
-height:75vh;
-border:none;
+.game-icon a{
+text-decoration:none;
+color:white;
+}
+
+.game-img{
+width:90px;
+height:90px;
 border-radius:20px;
-overflow:hidden;
+box-shadow:0 5px 20px rgba(0,0,0,0.5);
+}
+
+.game-icon p{
+margin-top:10px;
+font-size:18px;
+font-weight:bold;
 }
 </style>  </head>  
 <body>  
@@ -760,16 +767,19 @@ overflow:hidden;
 </div>
 💰 رصيدك: <span id="walletBalance">0</span> نقطة  
 </div> 
-<div class="game-container">
+<div class="game-icon">
 
-<iframe
-src="https://game2-ten-mu.vercel.app/"
-class="game-frame"
-scrolling="no"
-allowfullscreen>
-</iframe>
+<a href="https://game2-ten-mu.vercel.app/" target="_blank">
+
+<img src="wheel.png" class="game-img">
+
+<p>عجلة الحظ</p>
+
+</a>
 
 </div>
+
+
  <div id="prizesContainer"></div> <button id="adminBtn"
  
 style="
